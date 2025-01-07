@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kiralanmış kitaplar
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Rented Books</title>
+    <link rel="stylesheet" href="~/css/student_returnBook.css">
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+
+    <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <a href="/Student/Page" class="back-button">←</a>
+            <h1>My Rented Books</h1>
+            <input type="text" id="search-bar" placeholder="Search..." oninput="filterBooks()" />
+        </header>
+
+        <!-- Book List -->
+        <section id="book-list">
+            @if (rentedBooks != null && rentedBooks.Any())
+            {
+                @foreach (var book in rentedBooks)
+                {
+                    <div class="book-item">
+                        <img src="~/images/book.png" alt="@book.Title">
+                        <div class="book-details">
+                            <h3>@book.Title</h3>
+                            <p>Author: @book.Author</p>
+                            <p>Description: @book.Description</p>
+                        </div>
+                        <button onclick="returnBook('@book.Title', @book.Id)">Return</button>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No rented books available.</p>
+            }
+        </section>
+    </div>
+
+    <script>
+        // Search filter function
+        function filterBooks() {
+            const input = document.getElementById('search-bar').value.toLowerCase();
+            const bookItems = document.getElementsByClassName('book-item');
+
+            for (let i = 0; i < bookItems.length; i++) {
+                const bookTitle = bookItems[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (bookTitle.includes(input)) {
+                    bookItems[i].style.display = '';
+                } else {
+                    bookItems[i].style.display = 'none';
+                }
+            }
+        }
+
+        function returnBook(bookTitle, bookId) {
+            if (confirm(`Are you sure you want to return the book: ${bookTitle}?`)) {
+                // Call backend API to return the book
+                fetch(`/Book/Return/${bookId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookId: bookId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`${bookTitle} successfully returned.`);
+                            location.reload(); // Reload the page to update the list
+                        } else {
+                            alert('Error returning the book. Please try again.');
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

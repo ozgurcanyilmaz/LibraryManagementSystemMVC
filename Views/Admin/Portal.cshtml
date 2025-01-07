@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+    var books = ViewBag.Books as List<dynamic>; // Backend'den gelen kitaplar
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/admin_portal.css">
+    <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Library Management Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Log Out</button>
+        </header>
+
+        <!-- Manage Books Section -->
+        <section class="manage-books">
+            <h2>Manage Books</h2>
+            <div class="buttons">
+                <button class="action-btn" id="rented-book-btn" onclick="window.location.href='/Book/Rented'">Rented Books</button>
+                <button class="action-btn" id="add-book-btn" onclick="window.location.href='/Book/Add'">Add Book</button>
+                <button class="action-btn" id="update-book-btn" onclick="window.location.href='/Book/Update'">Update Book</button>
+                <button class="action-btn" id="delete-book-btn" onclick="window.location.href='/Book/Delete'">Delete Book</button>
+            </div>
+        </section>
+
+        <!-- Last Added Books Section -->
+        <div class="last-added-books">
+            <h2>Last Added Books</h2>
+            <div class="scroll-container">
+                @if (books != null && books.Any())
+                {
+                    @foreach (var book in books)
+                    {
+                        <div class="book-card">
+                            <img src="~/images/book.png" alt="@book.Title">
+                            <div class="book-info">
+                                <h3>@book.Title</h3>
+                                <p>@book.Author</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No books available. Add some books to get started!</p>
+                }
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

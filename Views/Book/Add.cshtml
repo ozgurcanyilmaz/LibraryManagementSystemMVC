@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+}
+<head>
+    <title>Add Book</title>
+    <link rel="stylesheet" href="~/css/add_book.css">
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+
+</head>
+<body>
+    <div class="container">
+        <a href="/Admin/Portal" class="button-secondary">Back</a>
+        <h1 class="title">Add New Book</h1>
+
+        <!-- Form for adding a new book -->
+        <form asp-controller="Book" asp-action="Add" method="post" enctype="multipart/form-data" class="form">
+            <div class="form-group">
+                <label for="book-isbn" class="label">Book ISBN</label>
+                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="ISBN" required>
+            </div>
+            <div class="form-group">
+                <label for="book-title" class="label">Book Title</label>
+                <input type="text" placeholder="Enter book title" class="input" id="book-title" name="Title" required>
+            </div>
+            <div class="form-group">
+                <label for="book-author" class="label">Author</label>
+                <input type="text" placeholder="Enter author name" class="input" id="book-author" name="Author" required>
+            </div>
+            <div class="form-group">
+                <label for="book-description" class="label">Description</label>
+                <textarea placeholder="Enter book description" class="input" id="book-description" name="Description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="book-image" class="label">Book Image</label>
+                <input type="file" accept="image/*" class="input" id="book-image" name="Image" required>
+            </div>
+            <button type="submit" class="button">Add Book</button>
+        </form>
+    </div>
+</body>
+</html>

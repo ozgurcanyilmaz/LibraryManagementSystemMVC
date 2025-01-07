@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+@{
+    Layout = null;
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Login</title>
+    <link rel="stylesheet" href="~/css/login.css">
+    <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+
+</head>
+
+<body>
+
+    <button class="back-button" onclick="goBack()">Back</button>
+    <div class="container">
+
+        <div class="form-container">
+            <div><h1>Librarian Login</h1></div>
+            <form onsubmit="return false;">
+                <!-- Name Input -->
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" placeholder="Name" required>
+                </div>
+
+                <!-- Password Input -->
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+
+                <div class="btn-field">
+                    <button type="submit" onclick="librarianLogin(event)">Log in</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

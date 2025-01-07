@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register</title>
+    <link rel="stylesheet" href="~/css/register.css">
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+
+</head>
+<body>
+    <div class="register-container">
+        <h2>Student Register</h2>
+        <form action="#" method="post">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <button type="submit" onclick="redirectTo('/Account/StudentLogin')">Register</button>
+        </form>
+        <p>Already have an account? <a href="/Account/StudentLogin">Log in</a></p>
+    </div>
+    <script>
+        function redirectTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>

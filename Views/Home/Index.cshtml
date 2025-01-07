@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System</title>
+    <link rel="stylesheet" href="~/css/index.css">
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+
+</head>
+
+<body>
+    <header class="header">
+        <h1>EYO Library</h1>
+    </header>
+
+    <div class="index-container">
+        <div class="login-card">
+            <div class="icon">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <button onclick="redirectTo('/Account/AdminLogin')">Librarian Login</button>
+        </div>
+
+        <div class="login-card">
+            <div class="icon">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <button onclick="redirectTo('/Account/StudentLogin')">Student Login</button>
+        </div>
+    </div>
+
+    <script>
+        function redirectTo(page) {
+            window.location.href = page;
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
