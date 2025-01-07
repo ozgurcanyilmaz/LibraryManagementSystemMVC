@@ -33,7 +33,7 @@ namespace LibraryManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 await _bookService.AddBookAsync(model);
-                return RedirectToAction("Index", "Home"); // Kitap eklendikten sonra kitaplar listesini gör
+                return RedirectToAction("Portal", "Admin"); // Kitap eklendikten sonra kitaplar listesini gör
             }
             return View(model);
         }
@@ -48,7 +48,7 @@ namespace LibraryManagementSystem.Controllers
             }
 
             await _bookService.DeleteBookAsync(id);
-            return RedirectToAction("Index", "Home"); // Kitap silindikten sonra listeyi güncelle
+            return RedirectToAction("Portal", "Admin"); // Kitap silindikten sonra listeyi güncelle
         }
 
         // Kitap güncelleme
@@ -78,7 +78,7 @@ namespace LibraryManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 await _bookService.UpdateBookAsync(model);
-                return RedirectToAction("Index", "Home"); // Kitap güncellendikten sonra kitaplar listesini gör
+                return RedirectToAction("Portal", "Admin"); // Kitap güncellendikten sonra kitaplar listesini gör
             }
             return View(model);
         }
