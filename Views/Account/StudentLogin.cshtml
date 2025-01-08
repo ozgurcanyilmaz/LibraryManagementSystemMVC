@@ -4,16 +4,12 @@
     Layout = null;
 }
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
+    <title>Student Login</title>
     <link rel="stylesheet" href="~/css/login.css" />
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
-    <script src="~/js/login.js" defer></script>
-    <script src="~/js/script.js" defer></script>
-
 </head>
 
 <body>
@@ -21,29 +17,45 @@
     <div class="container">
         <div class="form-container">
             <div><h1>Student Login</h1></div>
-            <form>
-                <!-- Name Input -->
+            <!-- Formu login metoduna bağladık -->
+            <form asp-action="StudentLogin" asp-controller="Account" method="post">
+                <!-- Username Input -->
                 <div class="input-group">
                     <i class="fa-solid fa-user"></i>
-                    <input type="text" id="username" placeholder="Name" required>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
                 </div>
 
                 <!-- Password Input -->
                 <div class="input-group">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
 
+                <!-- Login Button -->
                 <div class="btn-field">
-                    <button type="submit" onclick="loginn(event)">Log in</button>
-
+                    <button type="submit">Log in</button>
                 </div>
+
+                <!-- Redirect to Register -->
                 <div>
                     <a href="/Account/Register">Create an Account</a>
                 </div>
+
+                <!-- Error Message -->
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <p class="text-danger">@ViewBag.ErrorMessage</p>
+                }
             </form>
         </div>
     </div>
+
+    <script>
+                function goBack() {
+            window.location.href = "/Home/Index"; // Buraya istediğiniz URL'yi yazabilirsiniz
+        }
+
+    </script>
 </body>
 
 </html>

@@ -107,4 +107,45 @@ app.MapControllerRoute(
     defaults: new { controller = "Home", action = "Privacy" }
 );
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate(); // Applies any pending migrations
+        SeedAdminUser(context); // Seeds the admin user
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error seeding admin user: {ex.Message}");
+    }
+}
+
+
+
 app.Run();
+
+ static void SeedAdminUser(ApplicationDbContext context)
+{
+    // Check if an admin user already exists
+    if (!context.Users.Any(u => u.Role == "Admin"))
+    {
+        // Create a new admin user
+        var adminUser = new User
+        {
+            Username = "admin",
+            Email = "admin@admin.com",
+            Password = "admin", // Use your desired admin password
+            Role = "Admin"
+        };
+
+        context.Users.Add(adminUser);
+        context.SaveChanges();
+        Console.WriteLine("Admin user created successfully!");
+    }
+    else
+    {
+        Console.WriteLine("Admin user already exists.");
+    }
+}
