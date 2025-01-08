@@ -40,5 +40,29 @@
             <button type="submit" class="button">Add Book</button>
         </form>
     </div>
+    <script>
+        const successMessage = '@TempData["SuccessMessage"]';
+        if (successMessage) {
+            // Mesajý sayfanýn üst kýsmýnda göster
+            const messageContainer = document.createElement('div');
+            messageContainer.style.position = 'fixed';
+            messageContainer.style.top = '0';
+            messageContainer.style.left = '0';
+            messageContainer.style.width = '100%';
+            messageContainer.style.padding = '15px';
+            messageContainer.style.backgroundColor = '#4caf50';
+            messageContainer.style.color = 'white';
+            messageContainer.style.textAlign = 'center';
+            messageContainer.style.zIndex = '1000';
+            messageContainer.textContent = successMessage;
+            document.body.appendChild(messageContainer);
+
+            // 2 saniye sonra Portal'a yönlendir
+            setTimeout(() => {
+                window.location.href = "/Admin/Portal"; // Portal sayfasýna yönlendir
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>

@@ -3,26 +3,26 @@
 @{
     Layout = null;
 }
+
 <head>
     <title>Delete Book</title>
-    <link rel="stylesheet" href="~/css/delete_book.css">
-    <script src="~/js/login.js" defer></script>
-    <script src="~/js/script.js" defer></script>
-
+    <link rel="stylesheet" href="/css/delete_book.css">
 </head>
+
 <body>
     <div class="container">
         <a href="/Admin/Portal" class="button-secondary">Back</a>
         <h1 class="title">Delete Book</h1>
 
-        <!-- Form for deleting a book -->
         <form asp-controller="Book" asp-action="Delete" method="post" class="form">
             <div class="form-group">
                 <label for="book-isbn" class="label">Book ISBN</label>
-                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="ISBN" required>
+                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="isbn" required>
             </div>
+            <input type="hidden" name="confirm" value="true" />
             <button type="submit" class="button">Delete Book</button>
         </form>
     </div>
 </body>
+
 </html>

@@ -10,6 +10,7 @@ namespace LibraryManagementSystem.Services
         Task<List<Book>> GetLastAddedBooksAsync(int count);
         Task UpdateBookAsync(BookViewModel model);  // Kitap güncelleme
         Task DeleteBookAsync(int id);  // Kitap silme
+        Task<bool> DeleteBookByISBNAsync(string isbn);
         Task<List<Book>> GetRentedBooksAsync();  // Kiralanmış kitapları listeleme
     }
 }

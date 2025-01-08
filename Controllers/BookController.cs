@@ -33,44 +33,75 @@ namespace LibraryManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 await _bookService.AddBookAsync(model);
-                return RedirectToAction("Portal", "Admin"); // Kitap eklendikten sonra kitaplar listesini gör
+                TempData["SuccessMessage"] = "Book successfully added.";
+                return RedirectToAction("Add", "Book");
             }
             return View(model);
         }
 
-        // Kitap silme
-        public async Task<IActionResult> Delete(int id)
+        // Delete book with ISBN confirmation
+        [HttpGet]
+        public IActionResult Delete(string isbn)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            ViewBag.Message = $"Are you sure you want to delete the book with ISBN: {isbn}?";
+            ViewBag.ISBN = isbn;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string isbn, bool confirm)
+        {
+            Console.WriteLine($"ISBN received: {isbn}");
+
+            if (!confirm)
             {
-                return NotFound("The book you are trying to delete does not exist.");
+                ViewBag.Message = $"Are you sure you want to delete the book with ISBN: {isbn}?";
+                ViewBag.ISBN = isbn;
+                return View();
             }
 
-            await _bookService.DeleteBookAsync(id);
-            return RedirectToAction("Portal", "Admin"); // Kitap silindikten sonra listeyi güncelle
+            var result = await _bookService.DeleteBookByISBNAsync(isbn);
+            if (result)
+            {
+                TempData["Message"] = "The book has been successfully deleted.";
+                return RedirectToAction("Portal", "Admin");
+            }
+
+            TempData["Error"] = "Error deleting the book. Please try again.";
+            return RedirectToAction("Portal", "Admin");
         }
+
+
 
         // Kitap güncelleme
         public async Task<IActionResult> Update(int id)
         {
+            Console.WriteLine($"Received ID: {id}");
+            if (id == 0)
+            {
+                Console.WriteLine("ID is 0. This might be a routing or form issue.");
+                return BadRequest("Invalid ID.");
+            }
+
             var book = await _bookService.GetBookByIdAsync(id);
             if (book == null)
             {
-                return NotFound();
+                Console.WriteLine($"Book with ID {id} not found.");
+                return NotFound($"Book with ID {id} not found.");
             }
 
             var bookViewModel = new BookViewModel
             {
                 Id = book.Id,
-                ISBN = book.ISBN,
                 Title = book.Title,
                 Author = book.Author,
-                Description = book.Description
+                Description = book.Description,
+                ISBN = book.ISBN
             };
 
             return View(bookViewModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Update(BookViewModel model)

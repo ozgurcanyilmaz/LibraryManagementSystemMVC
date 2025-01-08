@@ -8,30 +8,32 @@
     <link rel="stylesheet" href="~/css/add_book.css">
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
 </head>
-<body>
+<body>  
     <div class="container">
         <a href="/Admin/Portal" class="button-secondary">Back</a>
         <h1 class="title">Update Book</h1>
 
         <!-- Form for updating a book -->
         <form asp-controller="Book" asp-action="Update" method="post" enctype="multipart/form-data" class="form">
+            <!-- Id (hidden) -->
+            <input type="hidden" name="Id" value="@Model.Id" />
+
             <div class="form-group">
                 <label for="book-isbn" class="label">Book ISBN</label>
-                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="ISBN" required>
+                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="ISBN" value="@Model.ISBN" required>
             </div>
             <div class="form-group">
                 <label for="book-title" class="label">Book Title</label>
-                <input type="text" placeholder="Enter book title" class="input" id="book-title" name="Title">
+                <input type="text" placeholder="Enter book title" class="input" id="book-title" name="Title" value="@Model.Title">
             </div>
             <div class="form-group">
                 <label for="book-author" class="label">Author</label>
-                <input type="text" placeholder="Enter author name" class="input" id="book-author" name="Author">
+                <input type="text" placeholder="Enter author name" class="input" id="book-author" name="Author" value="@Model.Author">
             </div>
             <div class="form-group">
                 <label for="book-description" class="label">Description</label>
-                <textarea placeholder="Enter book description" class="input" id="book-description" name="Description"></textarea>
+                <textarea placeholder="Enter book description" class="input" id="book-description" name="Description">@Model.Description</textarea>
             </div>
             <div class="form-group">
                 <label for="book-image" class="label">Book Image</label>
