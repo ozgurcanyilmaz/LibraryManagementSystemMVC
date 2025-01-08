@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryManagementSystem.Models;
+using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
     public class StudentController : Controller
     {
+        private readonly IBookService _bookService;
+
+        public StudentController(IBookService bookService)
+        {
+            _bookService = bookService;
+        }
         public IActionResult Page()
         {
-            return View(); // Views/Student/Page.cshtml
+            return View();
         }
 
-        public IActionResult ReturnBook()
-        {
-            return View(); // Views/Student/ReturnBook.cshtml
-        }
+
     }
 }

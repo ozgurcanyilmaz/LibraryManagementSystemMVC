@@ -1,3 +1,4 @@
+﻿﻿
 <!DOCTYPE html>
 <html lang="en">
 @{
@@ -11,22 +12,23 @@
     <link rel="stylesheet" href="~/css/register.css">
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
 </head>
+
 <body>
     <div class="register-container">
         <h2>Student Register</h2>
-        <form action="#" method="post">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        <!-- Form için asp-action ve asp-controller eklemeleri -->
+        <form asp-action="Register" asp-controller="Account" method="post">
+            <label for="Username">Name</label>
+            <input type="text" id="Username" name="Username" placeholder="Enter your name" required>
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="Email">Email</label>
+            <input type="email" id="Email" name="Email" placeholder="Enter your email" required>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <label for="Password">Password</label>
+            <input type="password" id="Password" name="Password" placeholder="Enter your password" required>
 
-            <button type="submit" onclick="redirectTo('/Account/StudentLogin')">Register</button>
+            <button type="submit">Register</button>
         </form>
         <p>Already have an account? <a href="/Account/StudentLogin">Log in</a></p>
     </div>

@@ -32,7 +32,7 @@ app.UseAuthorization();
 
 // AccountController routes
 app.MapControllerRoute(
-    name: "account-login",
+    name: "account-student-login",
     pattern: "Account/StudentLogin",
     defaults: new { controller = "Account", action = "StudentLogin" }
 );
