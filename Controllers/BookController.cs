@@ -61,14 +61,8 @@ namespace LibraryManagementSystem.Controllers
             }
 
             var result = await _bookService.DeleteBookByISBNAsync(isbn);
-            if (result)
-            {
-                TempData["Message"] = "The book has been successfully deleted.";
-                return RedirectToAction("Portal", "Admin");
-            }
-
-            TempData["Error"] = "Error deleting the book. Please try again.";
-            return RedirectToAction("Portal", "Admin");
+            TempData["SuccessMessage"] = "Book successfully deleted.";
+            return RedirectToAction("Delete", "Book");
         }
 
 
