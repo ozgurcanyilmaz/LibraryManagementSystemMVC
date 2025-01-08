@@ -30,7 +30,7 @@
             <input type="text" placeholder="Search for books..." class="search-bar" oninput="filterBooks()">
         </section>
 
-        <!-- New Added Books Section -->
+        <!-- Last Added Books Section -->
         <section class="new-books">
             <h2>Last Added Books</h2>
             <div class="scroll-container" id="newBooks">
@@ -39,9 +39,10 @@
                     @foreach (var book in newBooks)
                     {
                         <div class="book-card" onclick="showBookDetails('@book.Title', '@book.Author', '@book.Description')">
-                            <img src="~/images/book.png" alt="@book.Title">
+                            <img src="@book.ImagePath ?? '~/images/book.png'" alt="@book.Title">
                             <div class="book-info">
                                 <h3>@book.Title</h3>
+                                <p>@book.Author</p>
                             </div>
                         </div>
                     }
@@ -52,6 +53,7 @@
                 }
             </div>
         </section>
+
 
         <!-- My Rented Books Section -->
         <section class="rented-books">

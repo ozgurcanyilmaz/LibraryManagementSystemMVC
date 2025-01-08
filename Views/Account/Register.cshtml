@@ -1,5 +1,4 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 @{
     Layout = null;
@@ -17,21 +16,36 @@
 <body>
     <div class="register-container">
         <h2>Student Register</h2>
-        <!-- Form için asp-action ve asp-controller eklemeleri -->
+
+        <!-- Form with asp-action and asp-controller -->
         <form asp-action="Register" asp-controller="Account" method="post">
+            <!-- Username Field -->
             <label for="Username">Name</label>
-            <input type="text" id="Username" name="Username" placeholder="Enter your name" required>
+            <input type="text" id="Username" name="Username" placeholder="Enter your name" value="@Model?.Username" required>
+            @if (ViewData.ModelState["Username"]?.Errors.Count > 0)
+            {
+                <span class="error">@ViewData.ModelState["Username"].Errors[0].ErrorMessage</span>
+            }
 
+            <!-- Email Field -->
             <label for="Email">Email</label>
-            <input type="email" id="Email" name="Email" placeholder="Enter your email" required>
+            <input type="email" id="Email" name="Email" placeholder="Enter your email" value="@Model?.Email" required>
+            @if (ViewData.ModelState["Email"]?.Errors.Count > 0)
+            {
+                <span class="error">@ViewData.ModelState["Email"].Errors[0].ErrorMessage</span>
+            }
 
+            <!-- Password Field -->
             <label for="Password">Password</label>
             <input type="password" id="Password" name="Password" placeholder="Enter your password" required>
 
+            <!-- Submit Button -->
             <button type="submit">Register</button>
         </form>
+
         <p>Already have an account? <a href="/Account/StudentLogin">Log in</a></p>
     </div>
+
     <script>
         function redirectTo(page) {
             window.location.href = page;

@@ -23,6 +23,14 @@ body {
     text-align: center;
 }
 
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+    display: block;
+}
+
+
 h2 {
     margin-bottom: 20px;
     font-size: 24px;
@@ -57,9 +65,9 @@ button {
     border-radius: 5px;
 }
 
-    button:hover {
-        background-color: #45a049;
-    }
+button:hover {
+    background-color: #45a049;
+}
 
 p {
     margin-top: 15px;
@@ -72,6 +80,6 @@ a {
     text-decoration: none;
 }
 
-    a:hover {
-        text-decoration: underline;
-    }
+a:hover {
+    text-decoration: underline;
+}

@@ -10,6 +10,7 @@ namespace LibraryManagementSystem.Services
         public BookService(ApplicationDbContext context)
         {
             _context = context;
+         
         }
 
         // Tüm kitapları getir

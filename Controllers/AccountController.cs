@@ -78,7 +78,16 @@ namespace LibraryManagementSystem.Controllers
             {
                 if (_context.Users.Any(u => u.Email == model.Email))
                 {
-                    ViewBag.ErrorMessage = "A user with this email already exists.";
+                    ModelState.AddModelError("Email", "A user with this email already exists.");
+                }
+
+                if (_context.Users.Any(u => u.Username == model.Username))
+                {
+                    ModelState.AddModelError("Username", "A user with this username already exists.");
+                }
+
+                if (ModelState.ErrorCount > 0)
+                {
                     return View(model);
                 }
 
