@@ -1,3 +1,4 @@
+@model List<LibraryManagementSystem.Models.Book>
 <!DOCTYPE html>
 <html lang="en">
 @{
@@ -31,15 +32,15 @@
         </section>
 
         <!-- Last Added Books Section -->
-        <section class="new-books">
+        <div class="last-added-books">
             <h2>Last Added Books</h2>
-            <div class="scroll-container" id="newBooks">
-                @if (newBooks != null && newBooks.Any())
+            <div class="scroll-container">
+                @if (Model != null && Model.Any())
                 {
-                    @foreach (var book in newBooks)
+                    @foreach (var book in Model)
                     {
-                        <div class="book-card" onclick="showBookDetails('@book.Title', '@book.Author', '@book.Description')">
-                            <img src="@book.ImagePath ?? '~/images/book.png'" alt="@book.Title">
+                        <div class="book-card">
+                            <img src="@book.ImagePath" alt="@book.Title">
                             <div class="book-info">
                                 <h3>@book.Title</h3>
                                 <p>@book.Author</p>
@@ -49,11 +50,10 @@
                 }
                 else
                 {
-                    <p>No new books available.</p>
+                    <p>No books available. Add some books to get started!</p>
                 }
             </div>
-        </section>
-
+        </div>
 
         <!-- My Rented Books Section -->
         <section class="rented-books">

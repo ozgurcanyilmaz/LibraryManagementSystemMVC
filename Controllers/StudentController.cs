@@ -1,5 +1,4 @@
-﻿using LibraryManagementSystem.Models;
-using LibraryManagementSystem.Services;
+﻿using LibraryManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
@@ -12,19 +11,19 @@ namespace LibraryManagementSystem.Controllers
         {
             _bookService = bookService;
         }
-        public IActionResult Page()
+        public async Task<IActionResult> Page()
         {
-            return View();
-        }
-           public async Task<IActionResult> Portal()
-    {
-        // Son eklenen 5 kitabı al
-        var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
+            // Son eklenen 5 kitabı al
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
 
-        // Kitap listesini doğrudan modele bağlayarak döndür
-        return View(lastAddedBooks);
+            // Kitap listesini doğrudan modele bağlayarak döndür
+            return View(lastAddedBooks);
+        }
+
+
+        public IActionResult ReturnBook()
+        {
+            return View(); // Views/Student/ReturnBook.cshtml
+        }
     }
 }
-
-
-    }
