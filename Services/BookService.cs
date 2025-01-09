@@ -5,7 +5,7 @@ namespace LibraryManagementSystem.Services
 {
     public class BookService : IBookService
     {
-        private readonly ApplicationDbContext _context;  // DbContext, veritabanı işlemleri için
+        private readonly ApplicationDbContext _context;
 
         public BookService(ApplicationDbContext context)
         {
@@ -33,23 +33,27 @@ namespace LibraryManagementSystem.Services
                 Title = model.Title,
                 Author = model.Author,
                 Description = model.Description,
-                CreatedAt = System.DateTime.Now,
+                CreatedAt = DateTime.Now,
                 IsRented = false
             };
 
             if (model.Image != null)
             {
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", model.Image.FileName);
-                using (var stream = new FileStream(imagePath, FileMode.Create))
+                var fileName = Path.GetFileName(model.Image.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.Image.CopyToAsync(stream);
                 }
-                book.ImagePath = imagePath;
+
+                book.ImagePath = $"/images/{fileName}"; // Veritabanına görsel yolu kaydediyoruz
             }
 
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<List<Book>> GetLastAddedBooksAsync(int count)
         {
@@ -61,28 +65,31 @@ namespace LibraryManagementSystem.Services
 
 
         // Kitap güncelle
-        public async Task UpdateBookAsync(BookViewModel model)
+        public async Task<bool> UpdateBookAsync(Book model)
         {
-            var book = await GetBookByIdAsync(model.Id);
-            if (book != null)
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == model.ISBN);
+            if (book == null)
             {
-                book.Title = model.Title;
-                book.Author = model.Author;
-                book.Description = model.Description;
-
-                if (model.Image != null)
-                {
-                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", model.Image.FileName);
-                    using (var stream = new FileStream(imagePath, FileMode.Create))
-                    {
-                        await model.Image.CopyToAsync(stream);
-                    }
-                    book.ImagePath = imagePath;
-                }
-
-                _context.Books.Update(book);
-                await _context.SaveChangesAsync();
+                Console.WriteLine("Book not found with ISBN: " + model.ISBN); // Debugging
+                return false;
             }
+
+            // Kitap bilgilerini güncelle
+            book.Title = model.Title;
+            book.Author = model.Author;
+            book.Description = model.Description;
+            book.ImagePath = model.ImagePath;
+
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine("Book updated with ISBN: " + model.ISBN); // Debugging
+            return true;
+        }
+
+
+        public async Task<Book?> GetBookByISBNAsync(string isbn)
+        {
+            return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
         }
 
         // Kitap sil
@@ -95,6 +102,29 @@ namespace LibraryManagementSystem.Services
                 await _context.SaveChangesAsync();
             }
         }
+        // ISBN numarasına göre kitap sil
+        public async Task<bool> DeleteBookByISBNAsync(string isbn)
+        {
+
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
+
+
+            if (book == null)
+            {
+                Console.WriteLine("Book not found with ISBN: " + isbn); // Debugging
+                return false;
+            }
+
+
+            _context.Books.Remove(book);
+
+
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine("Book deleted with ISBN: " + isbn); // Debugging
+            return true;
+        }
+
 
         // Kiralanmış kitapları getir
         public async Task<List<Book>> GetRentedBooksAsync()

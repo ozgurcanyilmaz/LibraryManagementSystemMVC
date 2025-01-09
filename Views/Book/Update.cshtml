@@ -4,41 +4,98 @@
     Layout = null;
 }
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Book</title>
     <link rel="stylesheet" href="~/css/add_book.css">
-    <script src="~/js/login.js" defer></script>
-    <script src="~/js/script.js" defer></script>
-
 </head>
 <body>
     <div class="container">
         <a href="/Admin/Portal" class="button-secondary">Back</a>
         <h1 class="title">Update Book</h1>
 
-        <!-- Form for updating a book -->
-        <form asp-controller="Book" asp-action="Update" method="post" enctype="multipart/form-data" class="form">
-            <div class="form-group">
-                <label for="book-isbn" class="label">Book ISBN</label>
-                <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="ISBN" required>
-            </div>
-            <div class="form-group">
-                <label for="book-title" class="label">Book Title</label>
-                <input type="text" placeholder="Enter book title" class="input" id="book-title" name="Title">
-            </div>
-            <div class="form-group">
-                <label for="book-author" class="label">Author</label>
-                <input type="text" placeholder="Enter author name" class="input" id="book-author" name="Author">
-            </div>
-            <div class="form-group">
-                <label for="book-description" class="label">Description</label>
-                <textarea placeholder="Enter book description" class="input" id="book-description" name="Description"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="book-image" class="label">Book Image</label>
-                <input type="file" accept="image/*" class="input" id="book-image" name="Image">
-            </div>
-            <button type="submit" class="button">Update Book</button>
-        </form>
+        <!-- ISBN Giriþ Alaný -->
+        @if (ViewBag.ISBN == null)
+        {
+            <form asp-controller="Book" asp-action="Update" method="get" class="form">
+                <div class="form-group">
+                    <label for="book-isbn" class="label">Enter Book ISBN</label>
+                    <input type="text" placeholder="Enter book ISBN" class="input" id="book-isbn" name="isbn" required>
+                </div>
+                <button type="submit" class="button">Next</button>
+            </form>
+        }
+        else
+        {
+            <!-- Kitap Bilgileri Güncelleme Alaný -->
+            <form asp-controller="Book" asp-action="Update" method="post" enctype="multipart/form-data" class="form">
+                <div class="form-group">
+                    <label for="book-isbn" class="label">Book ISBN</label>
+                    <input type="text" class="input" id="book-isbn" name="ISBN" value="@Model.ISBN" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="book-title" class="label">Book Title</label>
+                    <input type="text" class="input" id="book-title" name="Title" value="@Model.Title" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-author" class="label">Author</label>
+                    <input type="text" class="input" id="book-author" name="Author" value="@Model.Author" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-description" class="label">Description</label>
+                    <textarea class="input" id="book-description" name="Description" required>@Model.Description</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="book-image" class="label">Book Image</label>
+                    <input type="file" class="input" id="book-image" name="Image">
+                </div>
+                <button type="submit" class="button">Update Book</button>
+            </form>
+        }
     </div>
+    <script>
+        const successMessage = '@TempData["SuccessMessage"]';
+        if (successMessage) {
+
+            const messageContainer = document.createElement('div');
+            messageContainer.style.position = 'fixed';
+            messageContainer.style.top = '0';
+            messageContainer.style.left = '0';
+            messageContainer.style.width = '100%';
+            messageContainer.style.padding = '15px';
+            messageContainer.style.backgroundColor = '#4caf50';
+            messageContainer.style.color = 'white';
+            messageContainer.style.textAlign = 'center';
+            messageContainer.style.zIndex = '1000';
+            messageContainer.textContent = successMessage;
+            document.body.appendChild(messageContainer);
+
+
+            setTimeout(() => {
+                window.location.href = "/Admin/Portal";
+            }, 1000);
+        }
+    </script>
+    <script>
+        const errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            const messageContainer = document.createElement('div');
+            messageContainer.style.position = 'fixed';
+            messageContainer.style.top = '0';
+            messageContainer.style.left = '0';
+            messageContainer.style.width = '100%';
+            messageContainer.style.padding = '15px';
+            messageContainer.style.backgroundColor = '#f44336';
+            messageContainer.style.color = 'white';
+            messageContainer.style.textAlign = 'center';
+            messageContainer.style.zIndex = '1000';
+            messageContainer.textContent = errorMessage;
+            document.body.appendChild(messageContainer);
+
+            setTimeout(() => {
+                messageContainer.remove(); 
+            }, 1000); 
+        }
+    </script>
 </body>
 </html>

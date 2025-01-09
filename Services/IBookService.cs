@@ -4,12 +4,14 @@ namespace LibraryManagementSystem.Services
 {
     public interface IBookService
     {
-        Task<List<Book>> GetAllBooksAsync();  // Tüm kitapları getirme
-        Task<Book> GetBookByIdAsync(int id);  // ID'ye göre kitap getirme
-        Task AddBookAsync(BookViewModel model);  // Kitap ekleme
+        Task<List<Book>> GetAllBooksAsync();
+        Task<Book> GetBookByIdAsync(int id);
+        Task AddBookAsync(BookViewModel model);
         Task<List<Book>> GetLastAddedBooksAsync(int count);
-        Task UpdateBookAsync(BookViewModel model);  // Kitap güncelleme
-        Task DeleteBookAsync(int id);  // Kitap silme
-        Task<List<Book>> GetRentedBooksAsync();  // Kiralanmış kitapları listeleme
+        Task<bool> UpdateBookAsync(Book model);
+        Task<Book?> GetBookByISBNAsync(string isbn);
+        Task DeleteBookAsync(int id);
+        Task<bool> DeleteBookByISBNAsync(string isbn);
+        Task<List<Book>> GetRentedBooksAsync();
     }
 }

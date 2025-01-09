@@ -8,7 +8,6 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly IBookService _bookService;
 
-        // Controller'a BookService enjekte ediyoruz
         public BookController(IBookService bookService)
         {
             _bookService = bookService;
@@ -33,61 +32,129 @@ namespace LibraryManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 await _bookService.AddBookAsync(model);
-                return RedirectToAction("Portal", "Admin"); // Kitap eklendikten sonra kitaplar listesini gör
+                TempData["SuccessMessage"] = "Book successfully added.";
+                return RedirectToAction("Add", "Book");
             }
             return View(model);
         }
 
-        // Kitap silme
-        public async Task<IActionResult> Delete(int id)
+        // ISBN Kitap Silme
+        [HttpGet]
+        public IActionResult Delete(string isbn)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
-            {
-                return NotFound("The book you are trying to delete does not exist.");
-            }
-
-            await _bookService.DeleteBookAsync(id);
-            return RedirectToAction("Portal", "Admin"); // Kitap silindikten sonra listeyi güncelle
+            ViewBag.Message = $"Are you sure you want to delete the book with ISBN: {isbn}?";
+            ViewBag.ISBN = isbn;
+            return View();
         }
 
-        // Kitap güncelleme
-        public async Task<IActionResult> Update(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(string isbn, bool confirm)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
+            Console.WriteLine($"ISBN received: {isbn}");
+
+            if (!confirm)
+            {
+                ViewBag.Message = $"Are you sure you want to delete the book with ISBN: {isbn}?";
+                ViewBag.ISBN = isbn;
+                return View();
+            }
+
+            var result = await _bookService.DeleteBookByISBNAsync(isbn);
+            TempData["SuccessMessage"] = "Book successfully deleted.";
+            return RedirectToAction("Delete", "Book");
+        }
+
+
+
+        // Kitap güncelleme
+        [HttpGet]
+        public async Task<IActionResult> Update(string isbn)
+        {
+
+            if (string.IsNullOrEmpty(isbn))
+            {
+                return View();
+            }
+
+
+            var book = await _bookService.GetBookByISBNAsync(isbn);
             if (book == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = $"No book found with ISBN: {isbn}.";
+                return View();
             }
+
 
             var bookViewModel = new BookViewModel
             {
                 Id = book.Id,
-                ISBN = book.ISBN,
                 Title = book.Title,
                 Author = book.Author,
-                Description = book.Description
+                Description = book.Description,
+                ISBN = book.ISBN
             };
 
+            ViewBag.ISBN = isbn;
             return View(bookViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(BookViewModel model)
+        public async Task<IActionResult> Update(BookViewModel model, IFormFile? Image)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _bookService.UpdateBookAsync(model);
-                return RedirectToAction("Portal", "Admin"); // Kitap güncellendikten sonra kitaplar listesini gör
+                TempData["ErrorMessage"] = "Invalid data. Please correct the errors.";
+                return View(model);
             }
-            return View(model);
+
+
+            var book = await _bookService.GetBookByISBNAsync(model.ISBN);
+            if (book == null)
+            {
+                TempData["ErrorMessage"] = "No book found with the given ISBN.";
+                return View(model);
+            }
+
+            book.Title = model.Title;
+            book.Author = model.Author;
+            book.Description = model.Description;
+
+
+            if (Image != null && Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Image.CopyToAsync(stream);
+                }
+
+                if (!string.IsNullOrEmpty(book.ImagePath))
+                {
+                    var oldFilePath = Path.Combine("wwwroot", book.ImagePath);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                book.ImagePath = "/images/" + fileName;
+            }
+
+            var success = await _bookService.UpdateBookAsync(book);
+            if (!success)
+            {
+                TempData["ErrorMessage"] = "Failed to update the book.";
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Book updated successfully.";
+            return RedirectToAction("Update", "Book");
         }
 
-        // Kiralanmış kitapları görüntüle
-        public async Task<IActionResult> Rented()
-        {
-            var rentedBooks = await _bookService.GetRentedBooksAsync();
-            return View(rentedBooks); // Kiralanmış kitapları görüntüle
-        }
+
+
+
     }
 }

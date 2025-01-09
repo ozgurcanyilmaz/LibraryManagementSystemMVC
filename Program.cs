@@ -16,7 +16,6 @@ builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -59,13 +58,13 @@ app.MapControllerRoute(
 // BookController routes
 app.MapControllerRoute(
     name: "book-add",
-    pattern: "Book/Add",
+    pattern: "Book/Add/{id?}",
     defaults: new { controller = "Book", action = "Add" }
 );
 
 app.MapControllerRoute(
     name: "book-delete",
-    pattern: "Book/Delete",
+    pattern: "Book/Delete/{isbn?}",
     defaults: new { controller = "Book", action = "Delete" }
 );
 
@@ -77,7 +76,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "book-update",
-    pattern: "Book/Update",
+    pattern: "Book/Update/{isbn?}",
     defaults: new { controller = "Book", action = "Update" }
 );
 

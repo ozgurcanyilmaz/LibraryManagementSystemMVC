@@ -15,15 +15,7 @@ public class AdminController : Controller
         // Son eklenen 5 kitabı al
         var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
 
-        // ViewBag ile kitapları gönder
-        ViewBag.Books = lastAddedBooks.Select(book => new
-        {
-            Title = book.Title,
-            Author = book.Author,
-            ISBN = book.ISBN,
-            Image = book.ImagePath
-        }).ToList();
-
-        return View();
+        // Kitap listesini doğrudan modele bağlayarak döndür
+        return View(lastAddedBooks);
     }
 }

@@ -1,39 +1,78 @@
-﻿function goBack() {
+﻿async function librarianLogin(event) {
+    event.preventDefault(); // Formun otomatik yenilenmesini engeller
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    console.log("Login attempt:", username, password);
+
+    try {
+        // Backend'e giriş isteği gönder
+        const response = await fetch('/api/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            // Rolü kontrol et ve yönlendir
+            if (data.role === 'Admin') {
+                alert("Welcome, Librarian!");
+                window.location.href = "/Admin/Portal";
+            } else {
+                alert("You do not have permission to access this page.");
+            }
+        } else {
+            const error = await response.json();
+            alert(error.message || "Invalid username or password.");
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred while logging in. Please try again.");
+    }
+}
+
+async function loginn(event) {
+    event.preventDefault(); // Formun otomatik yenilenmesini engeller
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    try {
+        // Backend'e giriş isteği gönder
+        const response = await fetch('/api/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            // Rolü kontrol et ve yönlendir
+            if (data.role === 'Student') {
+                alert("Welcome, Student!");
+                window.location.href = "/Student/Page";
+            } else {
+                alert("You do not have permission to access this page.");
+            }
+        } else {
+            const error = await response.json();
+            alert(error.message || "Invalid username or password.");
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred while logging in. Please try again.");
+    }
+}
+
+function goBack() {
     // Index sayfasına yönlendir
     window.location.href = "/";
-}
-
-function librarianLogin(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    // Temp login bilgileri
-    const librarianUsername = "admin";
-    const librarianPassword = "admin";
-
-    if (username === librarianUsername && password === librarianPassword) {
-        alert("Welcome, Librarian!");
-        // Admin Portal URL'sine yönlendir
-        window.location.href = "/Admin/Portal";
-    } else {
-        alert("Invalid username or password. Please try again.");
-    }
-}
-
-function loginn(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    // Temp student bilgileri
-    const studentid = "yaren";
-    const studentpas = "yaren";
-
-    if (username === studentid && password === studentpas) {
-        // Student Page URL'sine yönlendir
-        window.location.href = "/Student/Page";
-    } else {
-        alert("Invalid username or password. Please try again.");
-    }
 }

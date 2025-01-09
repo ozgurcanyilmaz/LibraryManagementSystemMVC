@@ -15,7 +15,7 @@
         <a href="/Admin/Portal" class="button-secondary">Back</a>
         <h1 class="title">Add New Book</h1>
 
-        <!-- Form for adding a new book -->
+        
         <form asp-controller="Book" asp-action="Add" method="post" enctype="multipart/form-data" class="form">
             <div class="form-group">
                 <label for="book-isbn" class="label">Book ISBN</label>
@@ -40,5 +40,29 @@
             <button type="submit" class="button">Add Book</button>
         </form>
     </div>
+    <script>
+        const successMessage = '@TempData["SuccessMessage"]';
+        if (successMessage) {
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.style.position = 'fixed';
+            messageContainer.style.top = '0';
+            messageContainer.style.left = '0';
+            messageContainer.style.width = '100%';
+            messageContainer.style.padding = '15px';
+            messageContainer.style.backgroundColor = '#4caf50';
+            messageContainer.style.color = 'white';
+            messageContainer.style.textAlign = 'center';
+            messageContainer.style.zIndex = '1000';
+            messageContainer.textContent = successMessage;
+            document.body.appendChild(messageContainer);
+
+            
+            setTimeout(() => {
+                window.location.href = "/Admin/Portal"; 
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
