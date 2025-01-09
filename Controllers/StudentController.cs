@@ -1,10 +1,8 @@
 ﻿using LibraryManagementSystem.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
-    [Authorize]
     public class StudentController : Controller
     {
         private readonly IBookService _bookService;
@@ -15,6 +13,7 @@ namespace LibraryManagementSystem.Controllers
         }
         public async Task<IActionResult> Page()
         {
+
             // Son eklenen 5 kitabı al
             var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
 
@@ -25,6 +24,7 @@ namespace LibraryManagementSystem.Controllers
 
         public IActionResult ReturnBook()
         {
+
             return View(); // Views/Student/ReturnBook.cshtml
         }
     }
