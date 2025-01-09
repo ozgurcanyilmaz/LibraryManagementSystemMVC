@@ -1,5 +1,7 @@
 ﻿using LibraryManagementSystem.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -27,23 +29,23 @@ namespace LibraryManagementSystem.Controllers
             return View();
         }
 
-        // Authenticate API (Hashleme ile Doğrulama)
+        // Authenticate API 
         [HttpPost]
         [Route("api/authenticate")]
         public IActionResult Authenticate([FromBody] LoginRequest request)
         {
             Console.WriteLine($"API called with Username: {request.Username}");
 
-            // Kullanıcıyı username'e göre bul
+
             var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
 
-            // Kullanıcı yoksa veya şifre yanlışsa
+
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return Unauthorized(new { message = "Invalid username or password" });
             }
 
-            // Giriş başarılı
+
             return Ok(new
             {
                 Username = user.Username,
@@ -57,22 +59,22 @@ namespace LibraryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Kullanıcı adı mevcut mu kontrol et
+
                 if (_context.Users.Any(u => u.Username == request.Username))
                 {
                     TempData["ErrorMessage"] = "This username is already taken. Please choose a different one.";
                     return View(request);
                 }
 
-                // Yeni kullanıcıyı oluştur
+
                 var newUser = new User
                 {
                     Username = request.Username,
-                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password), // Şifreyi hashle
-                    Role = "Student" // Rolü "Student" olarak ayarla
+                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                    Role = "Student"
                 };
 
-                // Veritabanına kaydet
+
                 _context.Users.Add(newUser);
                 _context.SaveChanges();
 
@@ -83,16 +85,16 @@ namespace LibraryManagementSystem.Controllers
             return View(request);
         }
 
-        // Mevcut Şifreleri Hashlemek için (Bir kere çalıştır)
+        // Mevcut Şifreleri Hashlemek için
         /*   public IActionResult RunHashing()
          {
              var users = _context.Users.ToList();
              foreach (var user in users)
              {
-                 // Eğer şifre zaten hashlenmemişse (genelde $2a$ ile başlar)
+                 // Eğer şifre zaten hashlenmemişse 
                  if (!user.Password.StartsWith("$2a$"))
                  {
-                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); // Şifreyi hashle
+                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); 
                  }
              }
 
@@ -100,5 +102,44 @@ namespace LibraryManagementSystem.Controllers
              return Ok("All existing passwords have been hashed successfully.");
          }
          */
+
+        [HttpPost]
+        public async Task<IActionResult> StudentLogin(LoginRequest request)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            {
+                TempData["ErrorMessage"] = "Invalid username or password.";
+                return View();
+            }
+
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var identity = new ClaimsIdentity(claims, "LibraryAuth");
+            var principal = new ClaimsPrincipal(identity);
+
+
+            await HttpContext.SignInAsync("LibraryAuth", principal);
+
+            return RedirectToAction("Page", "Student");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("LibraryAuth");
+            return RedirectToAction("StudentLogin", "Account");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

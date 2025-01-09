@@ -1,8 +1,10 @@
 ﻿using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         private readonly IBookService _bookService;

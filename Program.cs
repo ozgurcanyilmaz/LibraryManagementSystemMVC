@@ -11,6 +11,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Authentication için Cookie desteði
+builder.Services.AddAuthentication("LibraryAuth")
+    .AddCookie("LibraryAuth", options =>
+    {
+        options.LoginPath = "/";
+        options.AccessDeniedPath = "/";
+    });
 
 builder.Services.AddScoped<IBookService, BookService>();
 
@@ -27,6 +34,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // AccountController routes
