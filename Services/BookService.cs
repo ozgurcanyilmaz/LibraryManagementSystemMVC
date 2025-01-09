@@ -10,7 +10,6 @@ namespace LibraryManagementSystem.Services
         public BookService(ApplicationDbContext context)
         {
             _context = context;
-         
         }
 
         // Tüm kitapları getir
@@ -40,16 +39,15 @@ namespace LibraryManagementSystem.Services
 
             if (model.Image != null)
             {
-                var fileName = Path.GetFileName(model.Image.FileName); // Dosya ismini al
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName); // Dosyanın tam yolu
+                var fileName = Path.GetFileName(model.Image.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await model.Image.CopyToAsync(stream);
                 }
 
-                // Web'e uygun yol (relative path)
-                book.ImagePath = $"/images/{fileName}"; // Veritabanına göreli yolu kaydediyoruz
+                book.ImagePath = $"/images/{fileName}"; // Veritabanına görsel yolu kaydediyoruz
             }
 
             _context.Books.Add(book);
@@ -67,28 +65,31 @@ namespace LibraryManagementSystem.Services
 
 
         // Kitap güncelle
-        public async Task UpdateBookAsync(BookViewModel model)
+        public async Task<bool> UpdateBookAsync(Book model)
         {
-            var book = await GetBookByIdAsync(model.Id);
-            if (book != null)
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == model.ISBN);
+            if (book == null)
             {
-                book.Title = model.Title;
-                book.Author = model.Author;
-                book.Description = model.Description;
-
-                if (model.Image != null)
-                {
-                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", model.Image.FileName);
-                    using (var stream = new FileStream(imagePath, FileMode.Create))
-                    {
-                        await model.Image.CopyToAsync(stream);
-                    }
-                    book.ImagePath = imagePath;
-                }
-
-                _context.Books.Update(book);
-                await _context.SaveChangesAsync();
+                Console.WriteLine("Book not found with ISBN: " + model.ISBN); // Debugging
+                return false;
             }
+
+            // Kitap bilgilerini güncelle
+            book.Title = model.Title;
+            book.Author = model.Author;
+            book.Description = model.Description;
+            book.ImagePath = model.ImagePath;
+
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine("Book updated with ISBN: " + model.ISBN); // Debugging
+            return true;
+        }
+
+
+        public async Task<Book?> GetBookByISBNAsync(string isbn)
+        {
+            return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
         }
 
         // Kitap sil
@@ -101,30 +102,28 @@ namespace LibraryManagementSystem.Services
                 await _context.SaveChangesAsync();
             }
         }
-        // Delete book by ISBN
+        // ISBN numarasına göre kitap sil
         public async Task<bool> DeleteBookByISBNAsync(string isbn)
         {
-            // ISBN'ye göre kitabı bul
+
             var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
 
-            // Kitap bulunamazsa false döndür
+
             if (book == null)
             {
                 Console.WriteLine("Book not found with ISBN: " + isbn); // Debugging
                 return false;
             }
 
-            // Kitabı sil
+
             _context.Books.Remove(book);
 
-            // Değişiklikleri veritabanına kaydet
+
             await _context.SaveChangesAsync();
 
             Console.WriteLine("Book deleted with ISBN: " + isbn); // Debugging
             return true;
         }
-
-
 
 
         // Kiralanmış kitapları getir

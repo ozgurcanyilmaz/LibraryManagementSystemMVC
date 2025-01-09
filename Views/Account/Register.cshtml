@@ -18,7 +18,7 @@
         <h2>Student Register</h2>
 
         <!-- Form with asp-action and asp-controller -->
-        <form asp-action="Register" asp-controller="Account" method="post">
+        <form asp-action="Register" asp-controller="Account" method="post" id="registerForm">
             <!-- Username Field -->
             <label for="Username">Name</label>
             <input type="text" id="Username" name="Username" placeholder="Enter your name" value="@Model?.Username" required>
@@ -39,6 +39,14 @@
             <label for="Password">Password</label>
             <input type="password" id="Password" name="Password" placeholder="Enter your password" required>
 
+            <!-- Confirm Password Field -->
+            <label for="ConfirmPassword">Confirm Password</label>
+            <input type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Re-enter your password" required>
+            @if (ViewData.ModelState["ConfirmPassword"]?.Errors.Count > 0)
+            {
+                <span class="error">@ViewData.ModelState["ConfirmPassword"].Errors[0].ErrorMessage</span>
+            }
+
             <!-- Submit Button -->
             <button type="submit">Register</button>
         </form>
@@ -46,10 +54,17 @@
         <p>Already have an account? <a href="/Account/StudentLogin">Log in</a></p>
     </div>
 
+    <!-- Frontend Validation Script -->
     <script>
-        function redirectTo(page) {
-            window.location.href = page;
-        }
+        document.getElementById("registerForm").addEventListener("submit", function (event) {
+            const password = document.getElementById("Password").value;
+            const confirmPassword = document.getElementById("ConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                event.preventDefault(); // Prevent form submission
+                alert("Passwords do not match."); // Show error message
+            }
+        });
     </script>
 </body>
 </html>

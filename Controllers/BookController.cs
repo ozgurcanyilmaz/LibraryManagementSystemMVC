@@ -8,7 +8,6 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly IBookService _bookService;
 
-        // Controller'a BookService enjekte ediyoruz
         public BookController(IBookService bookService)
         {
             _bookService = bookService;
@@ -39,7 +38,7 @@ namespace LibraryManagementSystem.Controllers
             return View(model);
         }
 
-        // Delete book with ISBN confirmation
+        // ISBN Kitap Silme
         [HttpGet]
         public IActionResult Delete(string isbn)
         {
@@ -61,34 +60,30 @@ namespace LibraryManagementSystem.Controllers
             }
 
             var result = await _bookService.DeleteBookByISBNAsync(isbn);
-            if (result)
-            {
-                TempData["Message"] = "The book has been successfully deleted.";
-                return RedirectToAction("Portal", "Admin");
-            }
-
-            TempData["Error"] = "Error deleting the book. Please try again.";
-            return RedirectToAction("Portal", "Admin");
+            TempData["SuccessMessage"] = "Book successfully deleted.";
+            return RedirectToAction("Delete", "Book");
         }
 
 
 
         // Kitap güncelleme
-        public async Task<IActionResult> Update(int id)
+        [HttpGet]
+        public async Task<IActionResult> Update(string isbn)
         {
-            Console.WriteLine($"Received ID: {id}");
-            if (id == 0)
+
+            if (string.IsNullOrEmpty(isbn))
             {
-                Console.WriteLine("ID is 0. This might be a routing or form issue.");
-                return BadRequest("Invalid ID.");
+                return View();
             }
 
-            var book = await _bookService.GetBookByIdAsync(id);
+
+            var book = await _bookService.GetBookByISBNAsync(isbn);
             if (book == null)
             {
-                Console.WriteLine($"Book with ID {id} not found.");
-                return NotFound($"Book with ID {id} not found.");
+                TempData["ErrorMessage"] = $"No book found with ISBN: {isbn}.";
+                return View();
             }
+
 
             var bookViewModel = new BookViewModel
             {
@@ -99,26 +94,67 @@ namespace LibraryManagementSystem.Controllers
                 ISBN = book.ISBN
             };
 
+            ViewBag.ISBN = isbn;
             return View(bookViewModel);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Update(BookViewModel model)
+        public async Task<IActionResult> Update(BookViewModel model, IFormFile? Image)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _bookService.UpdateBookAsync(model);
-                return RedirectToAction("Portal", "Admin"); // Kitap güncellendikten sonra kitaplar listesini gör
+                TempData["ErrorMessage"] = "Invalid data. Please correct the errors.";
+                return View(model);
             }
-            return View(model);
+
+
+            var book = await _bookService.GetBookByISBNAsync(model.ISBN);
+            if (book == null)
+            {
+                TempData["ErrorMessage"] = "No book found with the given ISBN.";
+                return View(model);
+            }
+
+            book.Title = model.Title;
+            book.Author = model.Author;
+            book.Description = model.Description;
+
+
+            if (Image != null && Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(Image.FileName);
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Image.CopyToAsync(stream);
+                }
+
+                if (!string.IsNullOrEmpty(book.ImagePath))
+                {
+                    var oldFilePath = Path.Combine("wwwroot", book.ImagePath);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                book.ImagePath = "/images/" + fileName;
+            }
+
+            var success = await _bookService.UpdateBookAsync(book);
+            if (!success)
+            {
+                TempData["ErrorMessage"] = "Failed to update the book.";
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Book updated successfully.";
+            return RedirectToAction("Update", "Book");
         }
 
-        // Kiralanmış kitapları görüntüle
-        public async Task<IActionResult> Rented()
-        {
-            var rentedBooks = await _bookService.GetRentedBooksAsync();
-            return View(rentedBooks); // Kiralanmış kitapları görüntüle
-        }
+
+
+
     }
 }
