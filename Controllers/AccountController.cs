@@ -1,7 +1,6 @@
 ﻿using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -28,6 +27,7 @@ namespace LibraryManagementSystem.Controllers
         {
             return View();
         }
+
 
         // Authenticate API 
         [HttpPost]
@@ -103,32 +103,6 @@ namespace LibraryManagementSystem.Controllers
          }
          */
 
-        [HttpPost]
-        public async Task<IActionResult> StudentLogin(LoginRequest request)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
-            {
-                TempData["ErrorMessage"] = "Invalid username or password.";
-                return View();
-            }
-
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-
-            var identity = new ClaimsIdentity(claims, "LibraryAuth");
-            var principal = new ClaimsPrincipal(identity);
-
-
-            await HttpContext.SignInAsync("LibraryAuth", principal);
-
-            return RedirectToAction("Page", "Student");
-        }
 
         [HttpPost]
         public async Task<IActionResult> Logout()
