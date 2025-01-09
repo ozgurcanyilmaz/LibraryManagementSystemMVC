@@ -8,7 +8,6 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly IBookService _bookService;
 
-        // Controller'a BookService enjekte ediyoruz
         public BookController(IBookService bookService)
         {
             _bookService = bookService;
@@ -39,7 +38,7 @@ namespace LibraryManagementSystem.Controllers
             return View(model);
         }
 
-        // Delete book with ISBN confirmation
+        // ISBN Kitap Silme
         [HttpGet]
         public IActionResult Delete(string isbn)
         {
