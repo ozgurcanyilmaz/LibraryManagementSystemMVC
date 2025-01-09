@@ -51,6 +51,38 @@ namespace LibraryManagementSystem.Controllers
             });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(LoginRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kullanıcı adı mevcut mu kontrol et
+                if (_context.Users.Any(u => u.Username == request.Username))
+                {
+                    TempData["ErrorMessage"] = "This username is already taken. Please choose a different one.";
+                    return View(request);
+                }
+
+                // Yeni kullanıcıyı oluştur
+                var newUser = new User
+                {
+                    Username = request.Username,
+                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password), // Şifreyi hashle
+                    Role = "Student" // Rolü "Student" olarak ayarla
+                };
+
+                // Veritabanına kaydet
+                _context.Users.Add(newUser);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Registration successful";
+                return RedirectToAction("Register", "Account");
+            }
+
+            return View(request);
+        }
+
         // Mevcut Şifreleri Hashlemek için (Bir kere çalıştır)
         /*   public IActionResult RunHashing()
          {
