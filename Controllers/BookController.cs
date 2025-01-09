@@ -1,9 +1,11 @@
 ﻿using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize]
     public class BookController : Controller
     {
         private readonly IBookService _bookService;
@@ -21,6 +23,7 @@ namespace LibraryManagementSystem.Controllers
         }
 
         // Kitap ekleme
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return View();
@@ -39,6 +42,7 @@ namespace LibraryManagementSystem.Controllers
         }
 
         // ISBN Kitap Silme
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Delete(string isbn)
         {
@@ -67,6 +71,7 @@ namespace LibraryManagementSystem.Controllers
 
 
         // Kitap güncelleme
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(string isbn)
         {
