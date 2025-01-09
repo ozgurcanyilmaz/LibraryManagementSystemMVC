@@ -30,7 +30,7 @@ namespace LibraryManagementSystem.Controllers
         [HttpPost]
         public IActionResult AdminLogin(string username, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == "Admin");
+            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == HashPassword( password) && u.Role == "Admin");
 
             if (user == null)
             {
@@ -52,7 +52,7 @@ namespace LibraryManagementSystem.Controllers
         [HttpPost]
         public IActionResult StudentLogin(string username, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == "Student");
+            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password ==HashPassword(password) && u.Role == "Student");
 
             if (user == null)
             {
@@ -92,6 +92,7 @@ namespace LibraryManagementSystem.Controllers
                 }
 
                 model.Role = "Student";
+                model.Password = HashPassword(model.Password);
                 _context.Users.Add(model);
                 await _context.SaveChangesAsync();
 
@@ -99,6 +100,16 @@ namespace LibraryManagementSystem.Controllers
             }
 
             return View(model);
+        }
+
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var bytes = System.Text.Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
     }
 }

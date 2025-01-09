@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagementSystem.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -136,7 +137,7 @@ app.Run();
         {
             Username = "admin",
             Email = "admin@admin.com",
-            Password = "admin", // Use your desired admin password
+            Password = AccountController.HashPassword("admin"), // Use your desired admin password
             Role = "Admin"
         };
 
