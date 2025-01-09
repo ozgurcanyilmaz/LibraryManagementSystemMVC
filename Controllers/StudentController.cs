@@ -1,13 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
     public class StudentController : Controller
     {
-        public IActionResult Page()
+        private readonly IBookService _bookService;
+
+        public StudentController(IBookService bookService)
         {
-            return View(); // Views/Student/Page.cshtml
+            _bookService = bookService;
         }
+        public async Task<IActionResult> Page()
+        {
+            // Son eklenen 5 kitabı al
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
+
+            // Kitap listesini doğrudan modele bağlayarak döndür
+            return View(lastAddedBooks);
+        }
+
 
         public IActionResult ReturnBook()
         {
