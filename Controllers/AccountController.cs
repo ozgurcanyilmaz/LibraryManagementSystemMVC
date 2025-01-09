@@ -1,7 +1,8 @@
 ﻿using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -13,103 +14,133 @@ namespace LibraryManagementSystem.Controllers
         {
             _context = context;
         }
-        public IActionResult Logout()
-        {
-            // Kullanıcı oturumunu kapatma işlemleri
-            HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-        // Admin Login GET
-        [HttpGet]
+
         public IActionResult AdminLogin()
         {
-            return View(); // Varsayılan olarak Views/Account/AdminLogin.cshtml aranır
+            return View();
         }
 
-        // Admin Login POST
-        [HttpPost]
-        public IActionResult AdminLogin(string username, string password)
+        public IActionResult Register()
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == HashPassword( password) && u.Role == "Admin");
-
-            if (user == null)
-            {
-                ViewBag.ErrorMessage = "Invalid username or password.";
-                return View();
-            }
-
-            return RedirectToAction("Portal", "Admin");
+            return View();
         }
 
-        // Student Login GET
-        [HttpGet]
         public IActionResult StudentLogin()
         {
-            return View(); // Varsayılan olarak Views/Account/StudentLogin.cshtml aranır
+            return View();
         }
 
-        // Student Login POST
+        // Authenticate API 
         [HttpPost]
-        public IActionResult StudentLogin(string username, string password)
+        [Route("api/authenticate")]
+        public IActionResult Authenticate([FromBody] LoginRequest request)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password ==HashPassword(password) && u.Role == "Student");
+            Console.WriteLine($"API called with Username: {request.Username}");
 
-            if (user == null)
+
+            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
+
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
-                ViewBag.ErrorMessage = "Invalid username or password.";
+                return Unauthorized(new { message = "Invalid username or password" });
+            }
+
+
+            return Ok(new
+            {
+                Username = user.Username,
+                Role = user.Role,
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(LoginRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+
+                if (_context.Users.Any(u => u.Username == request.Username))
+                {
+                    TempData["ErrorMessage"] = "This username is already taken. Please choose a different one.";
+                    return View(request);
+                }
+
+
+                var newUser = new User
+                {
+                    Username = request.Username,
+                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                    Role = "Student"
+                };
+
+
+                _context.Users.Add(newUser);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Registration successful";
+                return RedirectToAction("Register", "Account");
+            }
+
+            return View(request);
+        }
+
+        // Mevcut Şifreleri Hashlemek için
+        /*   public IActionResult RunHashing()
+         {
+             var users = _context.Users.ToList();
+             foreach (var user in users)
+             {
+                 // Eğer şifre zaten hashlenmemişse 
+                 if (!user.Password.StartsWith("$2a$"))
+                 {
+                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); 
+                 }
+             }
+
+             _context.SaveChanges();
+             return Ok("All existing passwords have been hashed successfully.");
+         }
+         */
+
+        [HttpPost]
+        public async Task<IActionResult> StudentLogin(LoginRequest request)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+            {
+                TempData["ErrorMessage"] = "Invalid username or password.";
                 return View();
             }
+
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var identity = new ClaimsIdentity(claims, "LibraryAuth");
+            var principal = new ClaimsPrincipal(identity);
+
+
+            await HttpContext.SignInAsync("LibraryAuth", principal);
 
             return RedirectToAction("Page", "Student");
         }
 
-        // Register GET
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View(); // Varsayılan olarak Views/Account/Register.cshtml aranır
-        }
-
-        // Register POST
         [HttpPost]
-        public async Task<IActionResult> Register(User model)
+        public async Task<IActionResult> Logout()
         {
-            if (ModelState.IsValid)
-            {
-                if (_context.Users.Any(u => u.Email == model.Email))
-                {
-                    ModelState.AddModelError("Email", "A user with this email already exists.");
-                }
-
-                if (_context.Users.Any(u => u.Username == model.Username))
-                {
-                    ModelState.AddModelError("Username", "A user with this username already exists.");
-                }
-
-                if (ModelState.ErrorCount > 0)
-                {
-                    return View(model);
-                }
-
-                model.Role = "Student";
-                model.Password = HashPassword(model.Password);
-                _context.Users.Add(model);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("StudentLogin", "Account");
-            }
-
-            return View(model);
+            await HttpContext.SignOutAsync("LibraryAuth");
+            return RedirectToAction("StudentLogin", "Account");
         }
 
-        public static string HashPassword(string password)
+        public IActionResult AccessDenied()
         {
-            using (var sha256 = System.Security.Cryptography.SHA256.Create())
-            {
-                var bytes = System.Text.Encoding.UTF8.GetBytes(password);
-                var hash = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hash);
-            }
+            return View();
         }
     }
 }

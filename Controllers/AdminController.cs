@@ -1,21 +1,26 @@
 ﻿using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-public class AdminController : Controller
+namespace LibraryManagementSystem.Controllers
 {
-    private readonly IBookService _bookService;
-
-    public AdminController(IBookService bookService)
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller
     {
-        _bookService = bookService;
-    }
+        private readonly IBookService _bookService;
 
-    public async Task<IActionResult> Portal()
-    {
-        // Son eklenen 5 kitabı al
-        var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
+        public AdminController(IBookService bookService)
+        {
+            _bookService = bookService;
+        }
 
-        // Kitap listesini doğrudan modele bağlayarak döndür
-        return View(lastAddedBooks);
+        public async Task<IActionResult> Portal()
+        {
+            // Son eklenen 5 kitabı al
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
+
+            // Kitap listesini doğrudan modele bağlayarak döndür
+            return View(lastAddedBooks);
+        }
     }
 }
