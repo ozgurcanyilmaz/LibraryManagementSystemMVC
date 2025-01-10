@@ -85,23 +85,7 @@ namespace LibraryManagementSystem.Controllers
             return View(request);
         }
 
-        // Mevcut Şifreleri Hashlemek için
-        /*   public IActionResult RunHashing()
-         {
-             var users = _context.Users.ToList();
-             foreach (var user in users)
-             {
-                 // Eğer şifre zaten hashlenmemişse 
-                 if (!user.Password.StartsWith("$2a$"))
-                 {
-                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); 
-                 }
-             }
-
-             _context.SaveChanges();
-             return Ok("All existing passwords have been hashed successfully.");
-         }
-         */
+       
 
 
         [HttpPost]

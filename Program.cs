@@ -1,4 +1,4 @@
-using LibraryManagementSystem.Models;
+﻿using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,5 +111,33 @@ app.MapControllerRoute(
     pattern: "Home/Privacy",
     defaults: new { controller = "Home", action = "Privacy" }
 );
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Veritabanının mevcut olduğundan emin olun
+    context.Database.EnsureCreated();
+
+    // Admin kullanıcısını kontrol et ve gerekirse oluştur
+    if (!context.Users.Any(u => u.Username == "admin"))
+    {
+        var adminUser = new User
+        {
+            Username = "admin",
+            Password = BCrypt.Net.BCrypt.HashPassword("admin"), // Şifreyi hashle
+            Role = "Admin" // Admin rolü
+        };
+
+        context.Users.Add(adminUser);
+        context.SaveChanges();
+
+        Console.WriteLine("Admin user created with username: admin and password: admin");
+    }
+    else
+    {
+        Console.WriteLine("Admin user already exists.");
+    }
+}
 
 app.Run();

@@ -43,7 +43,8 @@ namespace LibraryManagementSystem.Migrations
 
                     b.Property<string>("ISBN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
