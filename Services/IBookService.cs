@@ -15,6 +15,7 @@ namespace LibraryManagementSystem.Services
 
         // Son eklenen kitapları getir
         Task<List<Book>> GetLastAddedBooksAsync(int count);
+        Task<List<Book>> GetLastRentedBooksAsync(int userId, int count);
 
         // Kitap güncelle
         Task<bool> UpdateBookAsync(Book model);
@@ -32,6 +33,7 @@ namespace LibraryManagementSystem.Services
         Task<List<Book>> GetRentedBooksAsync();
 
         // Kullanıcının kiraladığı kitapları getir
+        Task<List<Rental>> GetRentalsWithDetailsAsync();
         Task<List<Book>> GetRentedBooksByUserAsync(string userId);
 
         // Kitap kirala

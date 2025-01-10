@@ -62,6 +62,17 @@ namespace LibraryManagementSystem.Services
                 .Take(count)
                 .ToListAsync();
         }
+        public async Task<List<Book>> GetLastRentedBooksAsync(int userId, int count)
+        {
+            return await _context.Rentals
+                .Where(rental => rental.UserId == userId && rental.ReturnDate == null)
+                .Take(count)
+                .Include(r => r.Book) // Include the related Book entity
+                .Select(r => r.Book)  // Extract the Book object from each Rental
+                .OrderByDescending(r => r.Id) // Fetch the most recent rentals based on ID
+                .ToListAsync();
+        }
+
 
 
         // Kitap güncelle
@@ -145,11 +156,18 @@ namespace LibraryManagementSystem.Services
             if (book == null || string.IsNullOrEmpty(userId))
                 return false;
 
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == int.Parse(userId)); // Kullanıcıyı getir
+            if (user == null)
+                return false;
+
             var rental = new Rental
             {
                 BookId = book.Id,
-                UserId = int.Parse(userId), // Eğer UserId int ise
-                RentalDate = DateTime.Now
+                UserId = user.Id,
+                RentalDate = DateTime.Now,
+                BookISBN = book.ISBN, // Book ISBN
+                BookName = book.Title, // Book Name
+                Username = user.Username // Username
             };
 
             book.IsRented = true;
@@ -168,6 +186,29 @@ namespace LibraryManagementSystem.Services
                 return false;
             }
         }
+
+        public async Task<List<Rental>> GetRentalsWithDetailsAsync()
+        {
+            return await _context.Rentals
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .Select(r => new Rental
+                {
+                    Id = r.Id,
+                    BookId = r.BookId,
+                    UserId = r.UserId,
+                    RentalDate = r.RentalDate,
+                    ReturnDate = r.ReturnDate,
+                    BookISBN = r.BookISBN,
+                    BookName = r.BookName,
+                    Username = r.Username
+                })
+                .ToListAsync();
+        }
+
+
+
+
 
     }
 }

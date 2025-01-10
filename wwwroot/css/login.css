@@ -21,7 +21,7 @@ body {
     padding: 10px 15px;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
     .back-button:hover {
@@ -42,18 +42,19 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 15px;
     width: 400px;
-    height: 300px;
-    padding: 20px;
+    padding: 30px;
     text-align: center;
 }
 
 .input-group {
     display: flex;
     align-items: center;
-    margin: 15px 0;
+    margin-bottom: 20px;
     border: 1px solid #f3e8e8;
     border-radius: 8px;
     padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
     .input-group i {
@@ -66,6 +67,8 @@ body {
         border: none;
         outline: none;
         font-size: 1rem;
+        padding: 5px;
+        background-color: transparent;
     }
 
 .btn-field {
@@ -83,7 +86,7 @@ body {
         font-size: 1rem;
         cursor: pointer;
         margin-bottom: 10px;
-        transition: 0.3s;
+        transition: background 0.3s ease;
     }
 
         .btn-field button:hover {
@@ -97,3 +100,19 @@ body {
             .btn-field button[type="button"]:hover {
                 background: #0b7dda;
             }
+
+form div:last-child {
+    margin-top: 20px;
+}
+
+form a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+    form a:hover {
+        text-decoration: underline;
+    }

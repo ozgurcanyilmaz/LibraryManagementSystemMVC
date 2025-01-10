@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@model List<LibraryManagementSystem.Models.Rental>
+
+<!DOCTYPE html>
 <html lang="en">
-@{
-    Layout = null;
-    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kiralanmış kitaplar
-}
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="~/css/student_returnBook.css">
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
 </head>
 
@@ -26,18 +25,26 @@
 
         <!-- Book List -->
         <section id="book-list">
-            @if (rentedBooks != null && rentedBooks.Any())
+            @if (Model != null && Model.Any())
             {
-                @foreach (var book in rentedBooks)
+                @foreach (var rental in Model)
                 {
                     <div class="book-item">
-                        <img src="~/images/book.png" alt="@book.Title">
+                        <img src="~/images/book.png" alt="@rental.Book.Title">
                         <div class="book-details">
-                            <h3>@book.Title</h3>
-                            <p>Author: @book.Author</p>
-                            <p>Description: @book.Description</p>
+                            <h3>@rental.Book.Title</h3>
+                            <p>Author: @rental.Book.Author</p>
+                            <p>Description: @rental.Book.Description</p>
+                            <p>Rented on: @rental.RentalDate.ToShortDateString()</p>
+                            @if (rental.ReturnDate.HasValue)
+                            {
+                                <p>Returned on: @rental.ReturnDate.Value.ToShortDateString()</p>
+                            }
+                            else
+                            {
+                                <button onclick="returnBook('@rental.Book.Title', @rental.Id)">Return</button>
+                            }
                         </div>
-                        <button onclick="returnBook('@book.Title', @book.Id)">Return</button>
                     </div>
                 }
             }
@@ -64,15 +71,14 @@
             }
         }
 
-        function returnBook(bookTitle, bookId) {
+        function returnBook(bookTitle, rentalId) {
             if (confirm(`Are you sure you want to return the book: ${bookTitle}?`)) {
                 // Call backend API to return the book
-                fetch(`/Book/Return/${bookId}`, {
+                fetch(`/Book/Return/${rentalId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ bookId: bookId })
+                    }
                 })
                     .then(response => response.json())
                     .then(data => {
