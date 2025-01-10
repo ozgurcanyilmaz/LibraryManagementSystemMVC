@@ -131,5 +131,43 @@ namespace LibraryManagementSystem.Services
         {
             return await _context.Books.Where(b => b.IsRented).ToListAsync();
         }
+        public async Task<List<Book>> GetRentedBooksByUserAsync(string userId)
+        {
+            // Kullanıcının kiraladığı kitapları getir
+            return await _context.RentedBooks
+                .Where(rb => rb.UserId == userId)
+                .Select(rb => rb.Book)
+                .ToListAsync();
+        }
+
+        public async Task<bool> RentBookAsync(Book book, string userId)
+        {
+            if (book == null || string.IsNullOrEmpty(userId))
+                return false;
+
+            var rental = new Rental
+            {
+                BookId = book.Id,
+                UserId = int.Parse(userId), // Eğer UserId int ise
+                RentalDate = DateTime.Now
+            };
+
+            book.IsRented = true;
+
+            _context.Rentals.Add(rental);
+            _context.Books.Update(book);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while renting book: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

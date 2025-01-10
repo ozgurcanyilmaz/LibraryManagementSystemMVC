@@ -1,0 +1,202 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background-image: url('/images/background.png');
+    color: #2d3436;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(223, 218, 200, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 1rem 0;
+    position: relative; /* Eklendi */
+}
+
+.back-btn {
+    position: absolute;
+    left: -450px;
+    top: -40px; /* Üst kısma taşımak için */
+    display: inline-flex;
+    align-items: center;
+    color: #45a049;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+/* Book Details başlığını ortalamak için */
+.page-title {
+    text-align: center;
+    color: #2c3e50;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 1rem;
+}
+
+/* Book Details Section */
+.book-details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    background-color: rgba(223, 218, 200, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin: 0 auto; /* Ortalamak için */
+    max-width: 1000px;
+    width: 100%; /* Tam genişlik */
+}.fas, .fa-solid, .fa-regular, .fa-brands {
+    color: black !important; /* Yeşil renk */
+}
+
+/* Book Image Styles */
+.book-image {
+    padding: 2rem;
+    background-color: rgba(223, 218, 200, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .book-image img {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+        .book-image img:hover {
+            transform: scale(1.05);
+        }
+
+/* Book Info Styles */
+.book-info {
+    padding: 2.5rem;
+}
+
+    .book-info h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        
+        padding-bottom: 0.5rem;
+    }
+
+    .book-info p {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        color: #34495e;
+    }
+
+    .book-info strong {
+        color: #45a049;
+        font-weight: 600;
+    }
+
+/* Status Styles */
+.status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+    .status.available {
+        background-color:;
+        color: #45a049;
+    }
+
+    .status.rented {
+        background-color: #ff7675;
+        color: #fff;
+    }
+
+/* Rent Button Styles */
+.rent-btn {
+    display: inline-block;
+    background: #45a049;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+    .rent-btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+      
+        color:white;
+    }
+.page-title {
+    text-align: center;
+    color: #2c3e50;
+    margin: 1rem 0;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+    .info-group i {
+        margin-right: 0.5rem;
+        color: #3498db;
+    }
+
+.rental-message {
+    color: #e74c3c;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

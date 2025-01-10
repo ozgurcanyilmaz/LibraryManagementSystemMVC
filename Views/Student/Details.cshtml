@@ -1,0 +1,115 @@
+﻿@model LibraryManagementSystem.Models.Book
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Title - Book Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/details_page.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <a href="/Student/Page" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Library</span>
+            </a>
+            <h2 class="page-title">Book Details</h2>
+        </header>
+
+        <!-- Book Details Section -->
+        <section class="book-details">
+            <!-- Book Image Section -->
+            <div class="book-image">
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath" alt="@Model.Title" class="book-cover">
+                }
+                else
+                {
+                    <img src="~/images/default-book.jpg" alt="Default book cover" class="book-cover">
+                }
+            </div>
+
+            <!-- Book Information Section -->
+            <div class="book-info">
+                <h1 class="book-title">@Model.Title</h1>
+                
+                <div class="info-group">
+                    <p class="author">
+                        <i class="fas fa-user-edit"></i>
+                        <strong>Author:</strong>
+                        <span>@Model.Author</span>
+                    </p>
+
+                    <p class="description">
+                        <i class="fas fa-book-open"></i>
+                        <strong>Description:</strong>
+                        <span>@Model.Description</span>
+                    </p>
+
+                    <p class="status-container">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Status:</strong>
+                        <span class="status @(Model.IsRented ? "rented" : "available")">
+                            @if (Model.IsRented)
+                            {
+                                <i class="fas fa-times-circle"></i>
+                                <span>Currently Rented</span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-check-circle"></i>
+                                <span>Available</span>
+                            }
+                        </span>
+                    </p>
+                </div>
+
+                <!-- Rent Button Section -->
+              
+                @if (!Model.IsRented)
+                {
+                    <div class="action-section">
+                        <form asp-controller="Book" asp-action="Rent" method="post" class="rent-form">
+                            <input type="hidden" name="bookId" value="@Model.Id" required" />
+                            <button type="submit" class="rent-btn">
+                                <i class="fas fa-book"></i>
+                                Rent This Book
+                            </button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <div class="rental-info">
+                        <p class="rental-message">
+                            <i class="fas fa-clock"></i>
+                            This book is currently unavailable
+                        </p>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Additional Information Section -->
+        <section class="additional-info">
+            <div class="book-metadata">
+                <!-- Buraya kitap hakkında ek bilgiler eklenebilir -->
+            </div>
+        </section>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Animasyon ve interaktif özellikler için
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sayfa yüklendiğinde fade-in animasyonu
+            document.querySelector('.book-details').classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>

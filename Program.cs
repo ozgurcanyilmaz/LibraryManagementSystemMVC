@@ -4,19 +4,30 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Add services to the container
 builder.Services.AddControllersWithViews();
-
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddScoped<IBookService, BookService>();
+
+// Enable Authentication and Authorization
+builder.Services.AddAuthentication("LibraryAuth")
+    .AddCookie("LibraryAuth", options =>
+    {
+        options.LoginPath = "/Account/StudentLogin";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
@@ -30,103 +41,34 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Log each request path for debugging
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"Requested Path: {context.Request.Path}");
     await next();
 });
-// AccountController routes
-app.MapControllerRoute(
-    name: "account-login",
-    pattern: "Account/StudentLogin",
-    defaults: new { controller = "Account", action = "StudentLogin" }
-);
 
+// Map routes for various controllers
 app.MapControllerRoute(
-    name: "account-register",
-    pattern: "Account/Register",
-    defaults: new { controller = "Account", action = "Register" }
-);
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name: "account-admin-login",
-    pattern: "Account/AdminLogin",
-    defaults: new { controller = "Account", action = "AdminLogin" }
-);
-
-// AdminController routes
-app.MapControllerRoute(
-    name: "admin-portal",
-    pattern: "Admin/Portal",
-    defaults: new { controller = "Admin", action = "Portal" }
-);
-
-// BookController routes
-app.MapControllerRoute(
-    name: "book-add",
-    pattern: "Book/Add/{id?}",
-    defaults: new { controller = "Book", action = "Add" }
-);
-
-app.MapControllerRoute(
-    name: "book-delete",
-    pattern: "Book/Delete/{isbn?}",
-    defaults: new { controller = "Book", action = "Delete" }
-);
-
-app.MapControllerRoute(
-    name: "book-rented",
-    pattern: "Book/Rented",
-    defaults: new { controller = "Book", action = "Rented" }
-);
-
-app.MapControllerRoute(
-    name: "book-update",
-    pattern: "Book/Update/{isbn?}",
-    defaults: new { controller = "Book", action = "Update" }
-);
-
-// StudentController routes
-app.MapControllerRoute(
-    name: "student-page",
-    pattern: "Student/Page",
-    defaults: new { controller = "Student", action = "Page" }
-);
-
-app.MapControllerRoute(
-    name: "student-returnbook",
-    pattern: "Student/ReturnBook",
-    defaults: new { controller = "Student", action = "ReturnBook" }
-);
-
-// HomeController routes
-app.MapControllerRoute(
-    name: "home-index",
-    pattern: "",
-    defaults: new { controller = "Home", action = "Index" }
-);
-
-app.MapControllerRoute(
-    name: "home-privacy",
-    pattern: "Home/Privacy",
-    defaults: new { controller = "Home", action = "Privacy" }
-);
-
+// Ensure database and seed admin user
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    // Veritabanının mevcut olduğundan emin olun
-    context.Database.EnsureCreated();
+    // Apply pending migrations
+    context.Database.Migrate();
 
-    // Admin kullanıcısını kontrol et ve gerekirse oluştur
+    // Ensure admin user exists
     if (!context.Users.Any(u => u.Username == "admin"))
     {
         var adminUser = new User
         {
             Username = "admin",
-            Password = BCrypt.Net.BCrypt.HashPassword("admin"), // Şifreyi hashle
-            Role = "Admin" // Admin rolü
+            Password = BCrypt.Net.BCrypt.HashPassword("admin"),
+            Role = "Admin"
         };
 
         context.Users.Add(adminUser);

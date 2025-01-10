@@ -1,5 +1,6 @@
 ﻿using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
@@ -18,6 +19,65 @@ namespace LibraryManagementSystem.Controllers
         {
             var books = await _bookService.GetAllBooksAsync();
             return View(books); // Books listesini view'e gönder
+        }
+
+        // Kitap detayları
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            if (id == 0) // ID boşsa hata mesajı göster
+            {
+                TempData["ErrorMessage"] = "Invalid book ID.";
+                return RedirectToAction("Page");
+            }
+
+            var book = await _bookService.GetBookByIdAsync(id);
+            if (book == null)
+            {
+                TempData["ErrorMessage"] = "Book not found.";
+                return RedirectToAction("Page");
+            }
+
+            return View(book);
+        }
+
+        // Kitap kiralama
+
+        [HttpPost]
+        public async Task<IActionResult> Rent(int bookId)
+        {
+            var book = await _bookService.GetBookByIdAsync(bookId);
+            if (book == null)
+            {
+                TempData["ErrorMessage"] = "Book not found.";
+                return RedirectToAction("Page");
+            }
+
+            if (book.IsRented)
+            {
+                TempData["ErrorMessage"] = "This book is already rented.";
+                return RedirectToAction("Details", new { id = bookId });
+            }
+
+            var userId = HttpContext.User.Identity.Name;
+            var rentResult = await _bookService.RentBookAsync(book, userId);
+            if (!rentResult)
+            {
+                TempData["ErrorMessage"] = "Failed to rent the book.";
+                return RedirectToAction("Details", new { id = bookId });
+            }
+
+            TempData["SuccessMessage"] = "Book rented successfully.";
+            return RedirectToAction("Page", "Student");
+        }
+
+
+        // Kullanıcının kiraladığı kitapları listeleme
+        public async Task<IActionResult> MyRentedBooks()
+        {
+            var userId = HttpContext.User.Identity.Name; // Şu anda oturum açan kullanıcıyı al
+            var rentedBooks = await _bookService.GetRentedBooksByUserAsync(userId);
+            return View(rentedBooks);
         }
 
         // Kitap ekleme
@@ -64,18 +124,14 @@ namespace LibraryManagementSystem.Controllers
             return RedirectToAction("Delete", "Book");
         }
 
-
-
         // Kitap güncelleme
         [HttpGet]
         public async Task<IActionResult> Update(string isbn)
         {
-
             if (string.IsNullOrEmpty(isbn))
             {
                 return View();
             }
-
 
             var book = await _bookService.GetBookByISBNAsync(isbn);
             if (book == null)
@@ -83,7 +139,6 @@ namespace LibraryManagementSystem.Controllers
                 TempData["ErrorMessage"] = $"No book found with ISBN: {isbn}.";
                 return View();
             }
-
 
             var bookViewModel = new BookViewModel
             {
@@ -107,7 +162,6 @@ namespace LibraryManagementSystem.Controllers
                 return View(model);
             }
 
-
             var book = await _bookService.GetBookByISBNAsync(model.ISBN);
             if (book == null)
             {
@@ -118,7 +172,6 @@ namespace LibraryManagementSystem.Controllers
             book.Title = model.Title;
             book.Author = model.Author;
             book.Description = model.Description;
-
 
             if (Image != null && Image.Length > 0)
             {
@@ -152,9 +205,5 @@ namespace LibraryManagementSystem.Controllers
             TempData["SuccessMessage"] = "Book updated successfully.";
             return RedirectToAction("Update", "Book");
         }
-
-
-
-
     }
 }

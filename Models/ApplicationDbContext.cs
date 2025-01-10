@@ -11,5 +11,6 @@ namespace LibraryManagementSystem.Models
         public DbSet<Book> Books { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Rental> Rentals { get; set; }
+        public DbSet<RentedBook> RentedBooks { get; set; }
     }
 }

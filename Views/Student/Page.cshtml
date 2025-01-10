@@ -1,10 +1,9 @@
-@model List<LibraryManagementSystem.Models.Book>
+ï»¿@model List<LibraryManagementSystem.Models.Book>
 <!DOCTYPE html>
 <html lang="en">
 @{
     Layout = null;
-    var newBooks = ViewBag.NewBooks as List<dynamic>; // Backend'den gelen yeni eklenen kitaplar
-    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kiralanmýþ kitaplar
+    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kiralanmÄ±ÅŸ kitaplar
 }
 <head>
     <meta charset="UTF-8">
@@ -13,26 +12,25 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/student_page.css">
-    <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div class="container">
-
+        <!-- Header -->
         <header>
             <h1>EYO Library System</h1>
             <button class="logout-btn" onclick="logout()">Log Out</button>
         </header>
 
+        <!-- Search Section -->
         <section class="search">
             <input type="text" placeholder="Search for books..." class="search-bar" oninput="filterBooks()">
         </section>
 
         <!-- Last Added Books Section -->
-        <div class="last-added-books">
+        <section class="last-added-books">
             <h2>Last Added Books</h2>
             <div class="scroll-container">
                 @if (Model != null && Model.Any())
@@ -40,11 +38,13 @@
                     @foreach (var book in Model)
                     {
                         <div class="book-card">
-                            <img src="@book.ImagePath" alt="@book.Title">
-                            <div class="book-info">
-                                <h3>@book.Title</h3>
-                                <p>@book.Author</p>
-                            </div>
+                            <a asp-action="Details" asp-route-id="@book.Id">
+                                <img src="@book.ImagePath" alt="@book.Title">
+                                <div class="book-info">
+                                    <h3>@book.Title</h3>
+                                    <p>@book.Author</p>
+                                </div>
+                            </a>
                         </div>
                     }
                 }
@@ -53,7 +53,8 @@
                     <p>No books available. Add some books to get started!</p>
                 }
             </div>
-        </div>
+        </section>
+
 
         <!-- My Rented Books Section -->
         <section class="rented-books">
@@ -78,13 +79,16 @@
                 }
             </div>
         </section>
-
     </div>
 
+
+
+    <!-- JavaScript -->
     <script>
+        // Filter books by search input
         function filterBooks() {
             const searchInput = document.querySelector('.search-bar').value.toLowerCase();
-            const newBooks = document.querySelectorAll('#newBooks .book-card');
+            const newBooks = document.querySelectorAll('.last-added-books .book-card');
             const rentedBooks = document.querySelectorAll('#rentedBooks .book-card');
 
             // Filter new books
@@ -100,11 +104,17 @@
             });
         }
 
+        // Show book details in popup
         function showBookDetails(title, author, description) {
             document.getElementById('popup-title').innerText = title;
             document.getElementById('popup-author').innerText = 'Author: ' + author;
             document.getElementById('popup-description').innerText = description;
             document.getElementById('book-popup').style.display = 'flex';
+        }
+
+        // Close the popup
+        function closePopup() {
+            document.getElementById('book-popup').style.display = 'none';
         }
     </script>
 </body>
