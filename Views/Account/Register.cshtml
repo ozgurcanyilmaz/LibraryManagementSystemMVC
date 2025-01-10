@@ -5,12 +5,11 @@
 @{
     Layout = null;
 }
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Register</title>
-    <link rel="stylesheet" href="~/css/login.css" />
+    <link rel="stylesheet" href="~/css/register.css" />
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
@@ -35,7 +34,12 @@
                     <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-
+                <!-- Confirm Password Input -->
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
                 <div class="btn-field">
                     <button type="submit" class="btn btn-primary">Register</button>
                 </div>

@@ -112,4 +112,33 @@ app.MapControllerRoute(
     defaults: new { controller = "Home", action = "Privacy" }
 );
 
+//ilk baþta bir admin oluþturmak için
+/* using (var scope = app.Services.CreateScope())
+{
+   var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+   // Veritabanýnýn mevcut olduðundan emin olun
+   context.Database.EnsureCreated();
+
+   // Admin kullanýcýsýný kontrol et ve gerekirse oluþtur
+   if (!context.Users.Any(u => u.Username == "admin"))
+   {
+       var adminUser = new User
+       {
+           Username = "admin",
+           Password = BCrypt.Net.BCrypt.HashPassword("admin"), // Þifreyi hashle
+           Role = "Admin" // Admin rolü
+       };
+
+       context.Users.Add(adminUser);
+       context.SaveChanges();
+
+       Console.WriteLine("Admin user created with username: admin and password: admin");
+   }
+   else
+   {
+       Console.WriteLine("Admin user already exists.");
+   }
+} */
+
 app.Run();
