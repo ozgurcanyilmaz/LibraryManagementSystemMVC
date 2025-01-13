@@ -1,4 +1,4 @@
-using LibraryManagementSystem.Models;
+ï»¿using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -140,22 +140,23 @@ app.MapControllerRoute(
     defaults: new { controller = "Home", action = "Privacy" }
 );
 
-//ilk baþta bir admin oluþturmak için
+
+//ilk baÅŸta bir admin oluÅŸturmak iÃ§in
 /* using (var scope = app.Services.CreateScope())
 {
    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-   // Veritabanýnýn mevcut olduðundan emin olun
+   // VeritabanÄ±nÄ±n mevcut olduÄŸundan emin olun
    context.Database.EnsureCreated();
 
-   // Admin kullanýcýsýný kontrol et ve gerekirse oluþtur
+   // Admin kullanÄ±cÄ±sÄ±nÄ± kontrol et ve gerekirse oluÅŸtur
    if (!context.Users.Any(u => u.Username == "admin"))
    {
        var adminUser = new User
        {
            Username = "admin",
-           Password = BCrypt.Net.BCrypt.HashPassword("admin"), // Þifreyi hashle
-           Role = "Admin" // Admin rolü
+           Password = BCrypt.Net.BCrypt.HashPassword("admin"), // Åžifreyi hashle
+           Role = "Admin" // Admin rolÃ¼
        };
 
        context.Users.Add(adminUser);
