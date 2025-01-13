@@ -90,6 +90,23 @@ namespace LibraryManagementSystem.Services
                           }).ToListAsync();
         }
 
+        public async Task<List<RentalViewModel>> GetAllRentalsWithDetailsAsync()
+        {
+            return await (from rental in _context.Rentals
+                          join book in _context.Books on rental.BookId equals book.Id
+                          join user in _context.Users on rental.UserId equals user.Id.ToString()
+                          select new RentalViewModel
+                          {
+                              RentalId = rental.Id,
+                              RentalDate = rental.RentalDate,
+                              BookISBN = rental.BookISBN,
+                              BookName = rental.BookName,
+                              Author = book.Author,
+                              Description = book.Description,
+                              ImagePath = book.ImagePath,
+                              Username = user.Username
+                          }).ToListAsync();
+        }
 
     }
 }

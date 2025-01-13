@@ -3,6 +3,7 @@
     public class RentalViewModel
     {
         public int Id { get; set; }
+        public string Username { get; set; }
         public int RentalId { get; set; }
         public DateTime RentalDate { get; set; }
         public string BookISBN { get; set; }

@@ -11,6 +11,8 @@ namespace LibraryManagementSystem.Services
         Task AddRentalAsync(Rental rental);
         Task<bool> UpdateRentalAsync(Rental rental);
         Task<List<Rental>> GetRentalsByUserIdAsync(string userId);
+        Task<List<RentalViewModel>> GetAllRentalsWithDetailsAsync();
+
         Task DeleteRentalAsync(int rentalId);
         Task<List<RentalViewModel>> GetRentalsWithDetailsByUserIdAsync(string userId);
     }

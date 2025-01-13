@@ -1,0 +1,119 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-image: url('/images/background.png');
+    background-size: cover;
+    background-position: center;
+    color: #333;
+    background-attachment: fixed;
+}
+
+.container {
+    background-color: rgba(223, 218, 200, 0.95); 
+    margin: 2rem auto;
+    padding: 1.5rem;
+    max-width: 1100px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-button {
+    text-decoration: none;
+    color: white;
+    background-color: #4CAF50; 
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+    .back-button:hover {
+        background-color: white;
+        color: #3498DB;
+        border: 1px solid #3498DB;
+    }
+
+header h1 {
+    font-size: 1.8rem;
+    color: #333; 
+}
+
+#search-bar {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+
+.rented-books-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #f9f9f9; 
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .rented-books-table th, .rented-books-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .rented-books-table th {
+        background-color: #4CAF50; 
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    .rented-books-table tr:hover {
+        background-color: #f2f2f2; 
+    }
+
+    .rented-books-table tr:nth-child(even) {
+        background-color: #e9e2cb; 
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #search-bar {
+        width: 100%;
+    }
+
+    .rented-books-table {
+        font-size: 0.9rem;
+    }
+}
+
+
+button {
+    padding: 8px 16px;
+    background-color: #4CAF50; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover {
+        background-color: white;
+        color: #3498DB; 
+        border: 1px solid #3498DB;
+    }

@@ -7,10 +7,12 @@ namespace LibraryManagementSystem.Controllers
     public class BookController : Controller
     {
         private readonly IBookService _bookService;
+        private readonly IRentalService _rentalService;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, IRentalService rentalService)
         {
             _bookService = bookService;
+            _rentalService = rentalService;
         }
 
         // Kitap listeleme
@@ -153,8 +155,13 @@ namespace LibraryManagementSystem.Controllers
             return RedirectToAction("Update", "Book");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RentedBooks()
+        {
+            // Tüm kiralama kayıtlarını al
+            var rentals = await _rentalService.GetAllRentalsWithDetailsAsync();
 
-
-
+            return View(rentals);
+        }
     }
 }

@@ -84,9 +84,9 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
-    name: "book-rented",
-    pattern: "Book/Rented",
-    defaults: new { controller = "Book", action = "Rented" }
+    name: "book-rentedbooks",
+    pattern: "Book/RentedBooks",
+    defaults: new { controller = "Book", action = "RentedBooks" }
 );
 
 app.MapControllerRoute(
