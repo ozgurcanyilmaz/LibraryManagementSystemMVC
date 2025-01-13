@@ -40,8 +40,8 @@
                         @foreach (var book in Model)
                         {
                             <tr>
-                                <td>@book.BookName</td>
                                 <td>@book.BookISBN</td>
+                                <td>@book.BookName</td>
                                 <td>@book.Author</td>
                                 <td>@book.Username</td>
                                 <td>@book.RentalDate.ToShortDateString()</td>
