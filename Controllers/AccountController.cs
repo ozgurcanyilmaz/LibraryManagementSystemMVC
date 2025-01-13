@@ -1,6 +1,7 @@
 ﻿using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -32,19 +33,28 @@ namespace LibraryManagementSystem.Controllers
         // Authenticate API 
         [HttpPost]
         [Route("api/authenticate")]
-        public IActionResult Authenticate([FromBody] LoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
             Console.WriteLine($"API called with Username: {request.Username}");
 
-
             var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
-
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return Unauthorized(new { message = "Invalid username or password" });
             }
 
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Username), // Kullanıcı adı
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Kullanıcı ID
+        new Claim(ClaimTypes.Role, user.Role) // Kullanıcı rolü
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, "LibraryAuth");
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync("LibraryAuth", claimsPrincipal);
 
             return Ok(new
             {

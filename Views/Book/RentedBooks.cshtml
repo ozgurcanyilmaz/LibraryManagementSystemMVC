@@ -1,0 +1,73 @@
+﻿@model IEnumerable<LibraryManagementSystem.ViewModels.RentalViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+@{
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rented Books</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/rentedBooks.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <a href="/Admin/Portal" class="back-button">← Back to Admin Page</a>
+            <h1>Rented Books</h1>
+            <input type="text" id="search-bar" placeholder="Search by title..." oninput="filterBooks()">
+        </header>
+
+        <!-- Book List Section -->
+        <section id="book-list">
+            @if (Model != null && Model.Any())
+            {
+                <table class="rented-books-table">
+                    <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Title</th>                         
+                            <th>Author</th>
+                            <th>Rented By</th>
+                            <th>Rented On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Model)
+                        {
+                            <tr>
+                                <td>@book.BookName</td>
+                                <td>@book.BookISBN</td>
+                                <td>@book.Author</td>
+                                <td>@book.Username</td>
+                                <td>@book.RentalDate.ToShortDateString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No rented books available.</p>
+            }
+        </section>
+    </div>
+
+    <script>
+        // Search filter function
+        function filterBooks() {
+            const input = document.getElementById('search-bar').value.toLowerCase();
+            const rows = document.querySelectorAll('#book-list tbody tr');
+
+            rows.forEach(row => {
+                const title = row.querySelector('td:nth-child(1)').innerText.toLowerCase();
+                row.style.display = title.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

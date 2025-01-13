@@ -11,8 +11,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAuthentication("LibraryAuth")
+    .AddCookie("LibraryAuth", options =>
+    {
+        options.LoginPath = "/Account/StudentLogin";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
 
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
+
 
 var app = builder.Build();
 
@@ -75,9 +84,9 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
-    name: "book-rented",
-    pattern: "Book/Rented",
-    defaults: new { controller = "Book", action = "Rented" }
+    name: "book-rentedbooks",
+    pattern: "Book/RentedBooks",
+    defaults: new { controller = "Book", action = "RentedBooks" }
 );
 
 app.MapControllerRoute(
@@ -99,6 +108,25 @@ app.MapControllerRoute(
     defaults: new { controller = "Student", action = "ReturnBook" }
 );
 
+app.MapControllerRoute(
+    name: "student-rentbook",
+    pattern: "Student/RentBook",
+    defaults: new { controller = "Student", action = "RentBook" }
+);
+
+app.MapControllerRoute(
+    name: "student-rentbookprocess",
+    pattern: "Student/RentBookProcess",
+    defaults: new { controller = "Student", action = "RentBookProcess" }
+);
+
+app.MapControllerRoute(
+    name: "student-returnbookprocess",
+    pattern: "Student/ReturnBookProcess",
+    defaults: new { controller = "Student", action = "ReturnBookProcess" }
+);
+
+
 // HomeController routes
 app.MapControllerRoute(
     name: "home-index",
@@ -111,6 +139,7 @@ app.MapControllerRoute(
     pattern: "Home/Privacy",
     defaults: new { controller = "Home", action = "Privacy" }
 );
+
 
 //ilk başta bir admin oluşturmak için
 /* using (var scope = app.Services.CreateScope())

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibraryManagementSystem.ViewModels.RentalViewModel>
+﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
 <!DOCTYPE html>
 <html lang="en">
 @{
@@ -7,44 +7,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Rented Books</title>
-    <link rel="stylesheet" href="~/css/student_returnBook.css">
-</head>
+    <title>Rent a Book</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/student_returnBook.css">
+    <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
+    <script src="~/js/login.js" defer></script>
+    <script src="~/js/script.js" defer></script>
+</head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- Header Section -->
         <header>
-            <a href="/Student/Page" class="back-button">← Back to Dashboard</a>
-            <h1>My Rented Books</h1>
+            <a href="/Student/Page" class="back-button">← Back to Student Page</a>
+            <h1>Rent a Book</h1>
+            <input type="text" id="search-bar" placeholder="Search for books..." oninput="filterBooks()">
         </header>
 
-        <!-- Book List -->
+        <!-- Book List Section -->
         <section id="book-list">
             @if (Model != null && Model.Any())
             {
                 @foreach (var book in Model)
                 {
                     <div class="book-item">
-                        <img src="@book.ImagePath" alt="@book.BookName">
+                        <img src="@book.ImagePath" alt="@book.Title">
                         <div class="book-details">
-                            <h3>@book.BookName</h3>
-                            <p><strong>ISBN:</strong> @book.BookISBN</p>
-                            <p><strong>Rented On:</strong> @book.RentalDate.ToShortDateString()</p>
+                            <h3>@book.Title</h3>
+                            <p><strong>Author:</strong> @book.Author</p>
+                            <p><strong>Description:</strong> @book.Description</p>
+                            <p><strong>ISBN:</strong> @book.ISBN</p>
                         </div>
-                        <form method="post" action="/Student/ReturnBookProcess">
-                            <input type="hidden" name="rentalId" value="@book.RentalId" />
-                            <button type="submit" class="return-button">Return</button>
+                        <form asp-action="RentBookProcess" method="post">
+                            <input type="hidden" name="bookISBN" value="@book.ISBN" />
+                            <button type="submit" class="rent-button" @if (book.IsRented)
+                            {
+                                <text>disabled</text>
+                            }>Rent</button>
                         </form>
                     </div>
                 }
             }
             else
             {
-                <p>No rented books available.</p>
+                <p>No books available to rent.</p>
             }
         </section>
     </div>
+
+    <script>
+        // Search filter function
+        function filterBooks() {
+            const input = document.getElementById('search-bar').value.toLowerCase();
+            const bookItems = document.querySelectorAll('.book-item');
+
+            bookItems.forEach(book => {
+                const title = book.querySelector('h3').textContent.toLowerCase();
+                book.style.display = title.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
     <script>
         const successMessage = '@TempData["SuccessMessage"]';
         if (successMessage) {
@@ -64,7 +86,7 @@
 
 
             setTimeout(() => {
-                window.location.href = "/Student/ReturnBook";
+                window.location.href = "/Student/RentBook";
             }, 1000);
         }
     </script>
