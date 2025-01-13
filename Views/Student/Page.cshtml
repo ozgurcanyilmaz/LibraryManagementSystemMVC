@@ -3,8 +3,8 @@
 <html lang="en">
 @{
     Layout = null;
-    var newBooks = ViewBag.NewBooks as List<dynamic>; // Backend'den gelen yeni eklenen kitaplar
-    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kiralanmýþ kitaplar
+    var newBooks = ViewBag.NewBooks as List<dynamic>;
+    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; 
 }
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="~/css/student_page.css">
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
 </head>
 
@@ -60,6 +59,7 @@
             <h2>My Rented Books</h2>
             <div class="buttons">
                 <button class="action-btn" onclick="window.location.href='/Student/ReturnBook'">Return a Book</button>
+                <button class="action-btn" onclick="window.location.href='/Student/RentBook'">Rent a Book</button>
             </div>
             <div class="book-container" id="rentedBooks">
                 @if (rentedBooks != null && rentedBooks.Any())
@@ -67,14 +67,10 @@
                     @foreach (var book in rentedBooks)
                     {
                         <div class="book-card">
-                            <img src="~/images/book.png" alt="@book.Title">
+                            <img src="@book.ImagePath" alt="@book.Title">
                             <h3>@book.Title</h3>
                         </div>
                     }
-                }
-                else
-                {
-                    <p>No rented books available.</p>
                 }
             </div>
         </section>
@@ -84,10 +80,10 @@
     <script>
         function filterBooks() {
             const searchInput = document.querySelector('.search-bar').value.toLowerCase();
-            const newBooks = document.querySelectorAll('#newBooks .book-card');
+            const newBooks = document.querySelectorAll('.last-added-books .book-card');
             const rentedBooks = document.querySelectorAll('#rentedBooks .book-card');
 
-            // Filter new books
+            // Filter last added books
             newBooks.forEach(book => {
                 const title = book.querySelector('h3').textContent.toLowerCase();
                 book.style.display = title.includes(searchInput) ? '' : 'none';
@@ -100,11 +96,10 @@
             });
         }
 
-        function showBookDetails(title, author, description) {
-            document.getElementById('popup-title').innerText = title;
-            document.getElementById('popup-author').innerText = 'Author: ' + author;
-            document.getElementById('popup-description').innerText = description;
-            document.getElementById('book-popup').style.display = 'flex';
+        function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                window.location.href = '/Account/Logout';
+            }
         }
     </script>
 </body>

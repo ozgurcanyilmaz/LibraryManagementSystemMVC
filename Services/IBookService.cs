@@ -8,6 +8,8 @@ namespace LibraryManagementSystem.Services
         Task<Book> GetBookByIdAsync(int id);
         Task AddBookAsync(BookViewModel model);
         Task<List<Book>> GetLastAddedBooksAsync(int count);
+        Task<List<Book>> GetAvailableBooksAsync();
+
         Task<bool> UpdateBookAsync(Book model);
         Task<Book?> GetBookByISBNAsync(string isbn);
         Task DeleteBookAsync(int id);

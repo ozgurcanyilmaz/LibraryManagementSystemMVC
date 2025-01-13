@@ -11,8 +11,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAuthentication("LibraryAuth")
+    .AddCookie("LibraryAuth", options =>
+    {
+        options.LoginPath = "/Account/StudentLogin";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
 
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
+
 
 var app = builder.Build();
 
@@ -98,6 +107,25 @@ app.MapControllerRoute(
     pattern: "Student/ReturnBook",
     defaults: new { controller = "Student", action = "ReturnBook" }
 );
+
+app.MapControllerRoute(
+    name: "student-rentbook",
+    pattern: "Student/RentBook",
+    defaults: new { controller = "Student", action = "RentBook" }
+);
+
+app.MapControllerRoute(
+    name: "student-rentbookprocess",
+    pattern: "Student/RentBookProcess",
+    defaults: new { controller = "Student", action = "RentBookProcess" }
+);
+
+app.MapControllerRoute(
+    name: "student-returnbookprocess",
+    pattern: "Student/ReturnBookProcess",
+    defaults: new { controller = "Student", action = "ReturnBookProcess" }
+);
+
 
 // HomeController routes
 app.MapControllerRoute(

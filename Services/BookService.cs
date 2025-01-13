@@ -18,6 +18,14 @@ namespace LibraryManagementSystem.Services
             return await _context.Books.ToListAsync();
         }
 
+        public async Task<List<Book>> GetAvailableBooksAsync()
+        {
+            return await _context.Books
+                .Where(b => !b.IsRented) // Kiralanmamış kitapları filtrele
+                .ToListAsync();
+        }
+
+
         // ID'ye göre kitap getir
         public async Task<Book> GetBookByIdAsync(int id)
         {
