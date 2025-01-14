@@ -33,6 +33,11 @@ else
     app.UseHsts();
 }
 
+app.MapControllerRoute(
+    name: "book-rented",
+    pattern: "Book/Rented",
+    defaults: new { controller = "Book", action = "Rented" }
+);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

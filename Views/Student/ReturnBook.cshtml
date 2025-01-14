@@ -15,14 +15,17 @@
 </head>
 
 <body>
+    
     <div class="container">
+        
         <!-- Header -->
         <header>
             <a href="/Student/Page" class="back-button">←</a>
             <h1>My Rented Books</h1>
-            <input type="text" id="search-bar" placeholder="Search..." oninput="filterBooks()" />
+    
         </header>
 
+        <input type="text" id="search-bar" placeholder="Search..." oninput="filterBooks()" />
         <!-- Book List -->
         <section id="book-list">
             @if (Model != null && Model.Any())
@@ -36,14 +39,9 @@
                             <p>Author: @rental.Book.Author</p>
                             <p>Description: @rental.Book.Description</p>
                             <p>Rented on: @rental.RentalDate.ToShortDateString()</p>
-                            @if (rental.ReturnDate.HasValue)
-                            {
-                                <p>Returned on: @rental.ReturnDate.Value.ToShortDateString()</p>
-                            }
-                            else
-                            {
+                           
                                 <button onclick="returnBook('@rental.Book.Title', @rental.Id)">Return</button>
-                            }
+                            
                         </div>
                     </div>
                 }

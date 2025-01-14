@@ -35,6 +35,8 @@ namespace LibraryManagementSystem.Services
         // Kullanıcının kiraladığı kitapları getir
         Task<List<Rental>> GetRentalsWithDetailsAsync();
         Task<List<Book>> GetRentedBooksByUserAsync(string userId);
+        
+
 
         // Kitap kirala
         Task<bool> RentBookAsync(Book book, string userId);

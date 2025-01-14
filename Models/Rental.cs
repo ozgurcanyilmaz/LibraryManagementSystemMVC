@@ -1,4 +1,6 @@
-﻿namespace LibraryManagementSystem.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+namespace LibraryManagementSystem.Models
 {
     public class Rental
     {
@@ -14,5 +16,7 @@
 
         public Book Book { get; set; }
         public User User { get; set; }
+       
+      
     }
 }

@@ -7,6 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20250113211040_InitialMigration.cs" />
+    <Compile Remove="Migrations\20250113211040_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20250113211412_InitialMigrationn.cs" />
+    <Compile Remove="Migrations\20250113211412_InitialMigrationn.Designer.cs" />
+    <Compile Remove="Migrations\20250113211623_InitialMigratioon.cs" />
+    <Compile Remove="Migrations\20250113211623_InitialMigratioon.Designer.cs" />
+    <Compile Remove="Migrations\20250113212129_UpdateModel.cs" />
+    <Compile Remove="Migrations\20250113212129_UpdateModel.Designer.cs" />
+    <Compile Remove="Migrations\20250113212419_UpdateModell.cs" />
+    <Compile Remove="Migrations\20250113212419_UpdateModell.Designer.cs" />
+    <Compile Remove="Migrations\20250113212836_rentto.cs" />
+    <Compile Remove="Migrations\20250113212836_rentto.Designer.cs" />
+    <Compile Remove="Migrations\20250113213527_InitialMigration.cs" />
+    <Compile Remove="Migrations\20250113213527_InitialMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />

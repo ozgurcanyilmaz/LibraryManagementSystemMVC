@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@model List<LibraryManagementSystem.Models.Rental>
+<!DOCTYPE html>
 <html lang="en">
 @{
     Layout = null;
-    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; // Backend'den gelen kitaplar
 }
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="~/css/student_rentBook.css">
     <script src="~/js/login.js" defer></script>
     <script src="~/js/script.js" defer></script>
-
     <script src="https://kit.fontawesome.com/a270fcf83b.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -22,17 +21,19 @@
             <h1>Rented Books</h1>
             <input type="text" id="search-bar" placeholder="Search..." oninput="filterBooks()" />
         </header>
-
         <!-- Book List -->
         <section id="book-list">
-            @if (rentedBooks != null && rentedBooks.Any())
+            @if (Model != null && Model.Any())
             {
-                @foreach (var book in rentedBooks)
+                @foreach (var rental in Model)
                 {
-                    <div class="book-item" onclick="showBookDetails('@book.Title', '@book.Author', '@book.Description')">
-                        <img src="~/images/book.png" alt="@book.Title">
+                    <div class="book-item" onclick="showBookDetails('@rental.BookName', '@rental.Username', '@rental.RentalDate.ToString("dd/MM/yyyy")')">
+                       
                         <div class="book-info">
-                            <h3>@book.Title</h3>
+                            <h3>@rental.BookName</h3>
+                            <p>Rented by: @rental.Username</p>
+                            <p>Rental Date: @rental.RentalDate.ToString("dd/MM/yyyy")</p>
+                            <p>ISBN: @rental.BookISBN</p>
                         </div>
                     </div>
                 }
@@ -43,33 +44,31 @@
             }
         </section>
     </div>
-
     <!-- Book details popup -->
     <div id="book-popup" class="book-popup">
         <div class="popup-content">
             <span class="close-btn" onclick="document.getElementById('book-popup').style.display = 'none';">×</span>
             <h2 id="popup-title"></h2>
-            <p id="popup-author"></p>
-            <p id="popup-description"></p>
+            <p id="popup-renter"></p>
+            <p id="popup-date"></p>
         </div>
     </div>
-
     <script>
-        function showBookDetails(title, author, description) {
+        function showBookDetails(title, username, rentalDate) {
             document.getElementById('popup-title').innerText = title;
-            document.getElementById('popup-author').innerText = 'Author: ' + author;
-            document.getElementById('popup-description').innerText = description;
+            document.getElementById('popup-renter').innerText = 'Rented by: ' + username;
+            document.getElementById('popup-date').innerText = 'Rental Date: ' + rentalDate;
             document.getElementById('book-popup').style.display = 'flex';
         }
 
-        // Search filter function
         function filterBooks() {
             const input = document.getElementById('search-bar').value.toLowerCase();
             const bookItems = document.getElementsByClassName('book-item');
-
             for (let i = 0; i < bookItems.length; i++) {
-                const bookTitle = bookItems[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
-                if (bookTitle.includes(input)) {
+                const bookInfo = bookItems[i].getElementsByClassName('book-info')[0];
+                const bookTitle = bookInfo.getElementsByTagName('h3')[0].innerText.toLowerCase();
+                const renterInfo = bookInfo.getElementsByTagName('p')[0].innerText.toLowerCase();
+                if (bookTitle.includes(input) || renterInfo.includes(input)) {
                     bookItems[i].style.display = '';
                 } else {
                     bookItems[i].style.display = 'none';

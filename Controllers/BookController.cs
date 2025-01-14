@@ -13,6 +13,12 @@ namespace LibraryManagementSystem.Controllers
         {
             _bookService = bookService;
         }
+        [HttpGet]
+        public async Task<IActionResult> Rented()
+        {
+            var rentalsWithDetails = await _bookService.GetRentalsWithDetailsAsync();
+            return View(rentalsWithDetails);
+        }
 
         // Kitap listeleme
         public async Task<IActionResult> Index()

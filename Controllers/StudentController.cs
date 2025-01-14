@@ -21,7 +21,7 @@ namespace LibraryManagementSystem.Controllers
 
         public async Task<IActionResult> Page()
         {
-            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(30);
             int userId = Int32.Parse(HttpContext.User.Identity?.Name ?? "0");
             var lastRentedBooks = await _bookService.GetLastRentedBooksAsync(userId ,5); // Fetch last rented books
 
