@@ -21,8 +21,15 @@ namespace LibraryManagementSystem.Controllers
             // Son eklenen 5 kitabı al
             var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(5);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var rentedBooks = await _rentalService.GetRentalsWithDetailsByUserIdAsync(userId);
+
+            ViewBag.RentedBooks = rentedBooks;
             // Kitap listesini doğrudan modele bağlayarak döndür
             return View(lastAddedBooks);
+
+
         }
 
         public async Task<IActionResult> RentBook()

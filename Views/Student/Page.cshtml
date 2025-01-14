@@ -3,8 +3,7 @@
 <html lang="en">
 @{
     Layout = null;
-    var newBooks = ViewBag.NewBooks as List<dynamic>;
-    var rentedBooks = ViewBag.RentedBooks as List<dynamic>; 
+    var rentedBooks = ViewBag.RentedBooks as List<LibraryManagementSystem.ViewModels.RentalViewModel>;
 }
 <head>
     <meta charset="UTF-8">
@@ -67,13 +66,21 @@
                     @foreach (var book in rentedBooks)
                     {
                         <div class="book-card">
-                            <img src="@book.ImagePath" alt="@book.Title">
-                            <h3>@book.Title</h3>
+                            <img src="@book.ImagePath" alt="@book.BookName">
+                            <div class="book-info">
+                                <h3>@book.BookName</h3>
+                                <p>@book.Author</p>
+                            </div>
                         </div>
                     }
                 }
+                else
+                {
+                    <p>You haven't rented any books yet.</p>
+                }
             </div>
         </section>
+
 
     </div>
 

@@ -22,7 +22,7 @@
             <input type="text" id="search-bar" placeholder="Search by title..." oninput="filterBooks()">
         </header>
 
-        <!-- Book List Section -->
+        <!-- Book List Sectionn -->
         <section id="book-list">
             @if (Model != null && Model.Any())
             {
@@ -40,8 +40,8 @@
                         @foreach (var book in Model)
                         {
                             <tr>
-                                <td>@book.BookName</td>
                                 <td>@book.BookISBN</td>
+                                <td>@book.BookName</td>
                                 <td>@book.Author</td>
                                 <td>@book.Username</td>
                                 <td>@book.RentalDate.ToShortDateString()</td>
