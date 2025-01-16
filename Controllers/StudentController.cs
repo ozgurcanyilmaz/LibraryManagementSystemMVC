@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace LibraryManagementSystem.Controllers
 {
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
         private readonly IBookService _bookService;
@@ -14,18 +15,6 @@ namespace LibraryManagementSystem.Controllers
         {
             _bookService = bookService;
             _rentalService = rentalService;
-        }
-        public async Task<IActionResult> Main()
-        {
-
-            // Son eklenen 5 kitabı al
-            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(30);
-
-
-            // Kitap listesini doğrudan modele bağlayarak döndür
-            return View(lastAddedBooks);
-
-
         }
         public async Task<IActionResult> Page()
         {
@@ -43,7 +32,18 @@ namespace LibraryManagementSystem.Controllers
 
 
         }
+        public async Task<IActionResult> Main()
+        {
 
+            // Son eklenen 5 kitabı al
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(30);
+
+
+            // Kitap listesini doğrudan modele bağlayarak döndür
+            return View(lastAddedBooks);
+
+
+        }
         public async Task<IActionResult> RentBook()
         {
             var books = await _bookService.GetAvailableBooksAsync();
@@ -134,6 +134,7 @@ namespace LibraryManagementSystem.Controllers
 
             try
             {
+
                 // Kitap durumunu güncelle (kiralanmamış olarak işaretle)
                 var book = await _bookService.GetBookByIdAsync(rental.BookId);
                 if (book != null)
