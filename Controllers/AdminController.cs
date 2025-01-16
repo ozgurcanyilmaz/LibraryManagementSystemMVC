@@ -1,8 +1,11 @@
 ﻿using LibraryManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Controllers
 {
+
+    [Authorize(Roles = "Admin")]
 
     public class AdminController : Controller
     {
