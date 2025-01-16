@@ -138,6 +138,10 @@ app.MapControllerRoute(
     name: "home-privacy",
     pattern: "Home/Privacy",
     defaults: new { controller = "Home", action = "Privacy" }
+); app.MapControllerRoute(
+    name: "main-page",
+    pattern: "/Main",
+    defaults: new { controller = "Student", action = "Main" }
 );
 
 

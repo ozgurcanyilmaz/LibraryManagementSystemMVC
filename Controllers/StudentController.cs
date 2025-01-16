@@ -15,6 +15,18 @@ namespace LibraryManagementSystem.Controllers
             _bookService = bookService;
             _rentalService = rentalService;
         }
+        public async Task<IActionResult> Main()
+        {
+
+            // Son eklenen 5 kitabı al
+            var lastAddedBooks = await _bookService.GetLastAddedBooksAsync(30);
+
+
+            // Kitap listesini doğrudan modele bağlayarak döndür
+            return View(lastAddedBooks);
+
+
+        }
         public async Task<IActionResult> Page()
         {
 
